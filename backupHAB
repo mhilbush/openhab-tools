@@ -1,0 +1,11 @@
+#!/bin/bash
+
+# The location of the openHAB installation
+HAB="./openhab"
+
+cd /opt
+
+DATE=`date +%Y-%m-%d`
+BACKUPFILE=openhab-backup_${DATE}_00.tar.gz
+
+tar cvzf $BACKUPFILE $HAB
