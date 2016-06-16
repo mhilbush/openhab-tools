@@ -26,6 +26,7 @@ rm -rf $HAB/runtime
 rm -r $HAB/userdata/cache/*
 rm -r $HAB/userdata/tmp/*
 
+echo "Unzipping openHAB"
 unzip -n -q $DOWN/openhab-online-2.0.0-SNAPSHOT.zip
 
 # clear up some windows clutter not needed with *nix systems
@@ -34,23 +35,28 @@ rm $HAB/*.bat
 cd $HAB
 
 # Replace the karaf config file with mine
+echo "Replace karaf config file with mine"
 cp $HAB/runtime/karaf/etc/org.apache.karaf.shell.cfg $HAB/runtime/karaf/etc/org.apache.karaf.shell.cfg.orig
 cp $DOWN/org.apache.karaf.shell.cfg $HAB/runtime/karaf/etc/org.apache.karaf.shell.cfg
 
 # We want zwave debugging on by default
+echo "Enabling debug mode for zwave binding"
 echo "" >> $HAB/runtime/karaf/etc/org.ops4j.pax.logging.cfg
 echo "# We want zwave debugging on by default" >> $HAB/runtime/karaf/etc/org.ops4j.pax.logging.cfg
 echo "log4j.logger.org.openhab.binding.zwave = DEBUG" >> $HAB/runtime/karaf/etc/org.ops4j.pax.logging.cfg
 
 # uncomment the following 2 lines if the habmin2 jar is to be copied in
+echo "Copying HABmin to addons directory"
 rm $HAB/addons/org.openhab.ui.habmin_2*
 cp $DOWN/$H2JAR $HAB/addons
 
 # uncomment the following 3 lines if Eclipse Designer is also to be updated.  Be sure to save your work before updating.
 cd $SMD
 rm -rf $SMD/p2/* $SMD/plugins 
+echo "Unzipping designer"
 unzip -q -o $DOWN/$DES
 
 # Start with empty log files
+echo "Zapping the log files"
 cp /dev/null $HAB/userdata/logs/openhab.log
 cp /dev/null $HAB/userdata/logs/events.log
