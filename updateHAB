@@ -1,17 +1,5 @@
 #!/bin/bash
 
-#
-# This script will update your OpenHAB 2 installation.
-# The script assumes that the OpenHAB 2 is already installed.  Please shut it down and then run the script
-# If OpenHAB 2 is not already installed, create the directories ahead of time, and it will install OpenHAB 2
-#
-# This script will also update or install Smarthome Designer if desired.  Please make sure your work is saved
-#  before updating.
-#
-# v2 Greatly simplified for the new OpenHAB2 Karaf online distribution
-# v1.1 Jim Howard
-#
-
 # The location for archive downloads
 DOWN="/opt/DOWN"
 # The location of the openHAB installation
