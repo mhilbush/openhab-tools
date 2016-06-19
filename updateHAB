@@ -7,30 +7,30 @@ HAB="/opt/openhab"
 # The location of SmartHome Designer
 SMD="/opt/ohdesign"
 # Update this variable if the name of the Habmin2 jar changes
-H2JAR="org.openhab.ui.habmin_2.0.0.SNAPSHOT-0.1.6.jar"
+H2JAR="org.openhab.ui.habmin_0.1.6.jar"
 # Update this if the name of the designer snapshot changes
 DES="eclipsesmarthome-incubation-0.9.0-SNAPSHOT-designer-linux64.zip"
 
 cd $DOWN
 
-wget -N https://openhab.ci.cloudbees.com/job/openHAB-Distribution/lastSuccessfulBuild/artifact/distributions/openhab-online/target/openhab-online-2.0.0-SNAPSHOT.zip
+wget --no-verbose -N https://openhab.ci.cloudbees.com/job/openHAB-Distribution/lastSuccessfulBuild/artifact/distributions/openhab-online/target/openhab-online-2.0.0-SNAPSHOT.zip
 
 # Uncomment the following line if Habmin2 is desired
-wget -N --content-disposition --no-check-certificate https://github.com/cdjackson/HABmin2/raw/master/output/$H2JAR
+wget --no-verbose -N --content-disposition --no-check-certificate https://github.com/cdjackson/HABmin2/raw/master/output/$H2JAR
 
 # Uncomment the following line if SmartHome Designer is desired
-wget -N http://download.eclipse.org/smarthome/nightly-snapshots/$DES
+wget --no-verbose -N http://download.eclipse.org/smarthome/nightly-snapshots/$DES
 
 cd $HAB
 rm -rf $HAB/runtime
-rm -r $HAB/userdata/cache/*
-rm -r $HAB/userdata/tmp/*
+rm -rf $HAB/userdata/cache/*
+rm -rf $HAB/userdata/tmp/*
 
 echo "Unzipping openHAB"
 unzip -n -q $DOWN/openhab-online-2.0.0-SNAPSHOT.zip
 
 # clear up some windows clutter not needed with *nix systems
-rm $HAB/*.bat
+rm -f $HAB/*.bat
 
 cd $HAB
 
@@ -45,12 +45,12 @@ echo "" >> $HAB/runtime/karaf/etc/org.ops4j.pax.logging.cfg
 echo "# We want zwave debugging on by default" >> $HAB/runtime/karaf/etc/org.ops4j.pax.logging.cfg
 echo "log4j.logger.org.openhab.binding.zwave = DEBUG" >> $HAB/runtime/karaf/etc/org.ops4j.pax.logging.cfg
 
-# uncomment the following 2 lines if the habmin2 jar is to be copied in
+# uncomment the following 3 lines if the habmin2 jar is to be copied in
 echo "Copying HABmin to addons directory"
 rm $HAB/addons/org.openhab.ui.habmin_2*
 cp $DOWN/$H2JAR $HAB/addons
 
-# uncomment the following 3 lines if Eclipse Designer is also to be updated.  Be sure to save your work before updating.
+# uncomment the following 4 lines if Eclipse Designer is also to be updated.  Be sure to save your work before updating.
 cd $SMD
 rm -rf $SMD/p2/* $SMD/plugins 
 echo "Unzipping designer"
