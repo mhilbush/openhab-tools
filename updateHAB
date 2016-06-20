@@ -44,6 +44,7 @@ echo "Enabling debug mode for zwave binding"
 echo "" >> $HAB/runtime/karaf/etc/org.ops4j.pax.logging.cfg
 echo "# We want zwave debugging on by default" >> $HAB/runtime/karaf/etc/org.ops4j.pax.logging.cfg
 echo "log4j.logger.org.openhab.binding.zwave = DEBUG" >> $HAB/runtime/karaf/etc/org.ops4j.pax.logging.cfg
+echo "log4j.logger.org.openhab.binding.weather = WARN" >> $HAB/runtime/karaf/etc/org.ops4j.pax.logging.cfg
 
 # uncomment the following 3 lines if the habmin2 jar is to be copied in
 echo "Copying HABmin to addons directory"
