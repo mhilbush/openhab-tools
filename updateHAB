@@ -13,13 +13,13 @@ DES="eclipsesmarthome-incubation-0.9.0-SNAPSHOT-designer-linux64.zip"
 
 cd $DOWN
 
-wget --no-verbose -N https://openhab.ci.cloudbees.com/job/openHAB-Distribution/lastSuccessfulBuild/artifact/distributions/openhab-online/target/openhab-online-2.0.0-SNAPSHOT.zip
+wget -N -q --show-progress https://openhab.ci.cloudbees.com/job/openHAB-Distribution/lastSuccessfulBuild/artifact/distributions/openhab-online/target/openhab-online-2.0.0-SNAPSHOT.zip
 
 # Uncomment the following line if Habmin2 is desired
-wget --no-verbose -N --content-disposition --no-check-certificate https://github.com/cdjackson/HABmin2/raw/master/output/$H2JAR
+wget -N -q --show-progress --content-disposition --no-check-certificate https://github.com/cdjackson/HABmin2/raw/master/output/$H2JAR
 
 # Uncomment the following line if SmartHome Designer is desired
-wget --no-verbose -N http://download.eclipse.org/smarthome/nightly-snapshots/$DES
+wget -N -q --show-progress http://download.eclipse.org/smarthome/nightly-snapshots/$DES
 
 cd $HAB
 rm -rf $HAB/runtime
