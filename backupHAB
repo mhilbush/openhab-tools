@@ -9,4 +9,8 @@ HOST=`hostname`
 DATE=`date +%Y-%m-%d`
 BACKUPFILE=openhab-backup@${HOST}_${DATE}_00.tar.gz
 
-tar cvzf $BACKUPFILE $HAB
+echo "Backing up to file " $BACKUPFILE
+tar czf ${BACKUPFILE} ${HAB}
+
+echo "Copying backup to NAS..."
+scp ${BACKUPFILE} openhab@nas.nj.hilbush.com:~
