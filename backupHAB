@@ -5,7 +5,8 @@ HAB="./openhab"
 
 cd /opt
 
+HOST=`hostname`
 DATE=`date +%Y-%m-%d`
-BACKUPFILE=openhab-backup_${DATE}_00.tar.gz
+BACKUPFILE=openhab-backup@${HOST}_${DATE}_00.tar.gz
 
 tar cvzf $BACKUPFILE $HAB
