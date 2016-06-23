@@ -13,4 +13,4 @@ echo "Backing up to file " $BACKUPFILE
 tar czf ${BACKUPFILE} ${HAB}
 
 echo "Copying backup to NAS..."
-scp ${BACKUPFILE} openhab@nas.nj.hilbush.com:~
+scp ${BACKUPFILE} openhab@nas.nj.hilbush.com:~/${HOST}/${BACKUPFILE}
