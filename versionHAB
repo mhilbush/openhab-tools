@@ -1,0 +1,10 @@
+#!/bin/bash
+
+KARAF_DIR="/opt/openhab/runtime/karaf"
+
+${KARAF_DIR}/bin/client -l 0 -b << EOF
+list org.eclipse.smarthome.core
+list org.openhab.ui.habmin
+list org.openhab.binding.zwave
+EOF
+
