@@ -9,7 +9,7 @@ wget -N -q --show-progress https://raw.githubusercontent.com/mhilbush/openhab-to
 wget -N -q --show-progress https://raw.githubusercontent.com/mhilbush/openhab-tools/master/updateZWAVE
 wget -N -q --show-progress https://raw.githubusercontent.com/mhilbush/openhab-tools/master/versionHAB
 wget -N -q --show-progress https://raw.githubusercontent.com/mhilbush/openhab-tools/master/backupHAB
-wget -N -q --show-progress https://raw.githubusercontent.com/mhilbush/openhab-tools/master/gettoolsHAB
+#wget -N -q --show-progress https://raw.githubusercontent.com/mhilbush/openhab-tools/master/gettoolsHAB
 
 chown mark:mark gettoolsHAB updateHAB updateZWAVE versionHAB backupHAB
 chmod 755 gettoolsHAB updateHAB updateZWAVE versionHAB backupHAB
