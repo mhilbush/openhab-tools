@@ -1,0 +1,15 @@
+#!/bin/bash
+
+HAB_PARENT_DIR="/opt"
+
+cd ${HAB_PARENT_DIR}
+
+echo "Pulling files from repo"
+wget -N -q --show-progress https://raw.githubusercontent.com/mhilbush/openhab-tools/master/updateHAB
+wget -N -q --show-progress https://raw.githubusercontent.com/mhilbush/openhab-tools/master/updateZWAVE
+wget -N -q --show-progress https://raw.githubusercontent.com/mhilbush/openhab-tools/master/backupHAB
+
+chmod 755 updateHAB updateZWAVE backupHAB
+
+echo "Done!"
+
