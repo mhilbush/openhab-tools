@@ -8,6 +8,7 @@ echo "Pulling files from repo"
 wget -N -q --show-progress https://raw.githubusercontent.com/mhilbush/openhab-tools/master/updateHAB
 wget -N -q --show-progress https://raw.githubusercontent.com/mhilbush/openhab-tools/master/updateZWAVE
 wget -N -q --show-progress https://raw.githubusercontent.com/mhilbush/openhab-tools/master/backupHAB
+wget -N -q --show-progress https://raw.githubusercontent.com/mhilbush/openhab-tools/master/gettoolsHAB
 
 chown mark:mark gettoolsHAB updateHAB updateZWAVE backupHAB
 chmod 755 gettoolsHAB updateHAB updateZWAVE backupHAB
