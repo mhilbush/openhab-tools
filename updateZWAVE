@@ -1,0 +1,10 @@
+#!/bin/bash
+
+KARAF_DIR="/opt/openhab/runtime/karaf"
+
+${KARAF_DIR}/bin/client -l 0 -b << EOF
+bundle:update org.openhab.binding.zwave
+list org.openhab.binding.zwave
+log:get org.openhab.binding.zwave
+EOF
+
