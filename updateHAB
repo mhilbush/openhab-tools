@@ -10,46 +10,64 @@ SMD="/opt/ohdesign"
 H2JAR="org.openhab.ui.habmin_0.1.6.jar"
 # Update this if the name of the designer snapshot changes
 DES="eclipsesmarthome-incubation-0.9.0-SNAPSHOT-designer-linux64.zip"
+# URL to HABmin website
+URL_CDJ="https://github.com/cdjackson/HABmin2/raw/master/output"
+# URL to designer snapshot directory
+URL_SMD="http://download.eclipse.org/smarthome/nightly-snapshots"
 
 cd $DOWN
 
 wget -N -q --show-progress https://openhab.ci.cloudbees.com/job/openHAB-Distribution/lastSuccessfulBuild/artifact/distributions/openhab-online/target/openhab-online-2.0.0-SNAPSHOT.zip
 
 # Uncomment the following line if Habmin2 is desired
-wget -N -q --show-progress --content-disposition --no-check-certificate https://github.com/cdjackson/HABmin2/raw/master/output/$H2JAR
+if [[ `wget -S --spider ${URL_CDJ}/${H2JAR}  2>&1 | grep 'HTTP/1.1 200 OK'` ]]; 
+then 
+	echo "HABmin file exists.  Fetching it";
+	wget -N -q --show-progress --content-disposition --no-check-certificate ${CDJ}/${H2JAR}
+else
+	echo "HABmin file does not exist on remote server!!! Check the website for a new rev."
+	echo "Remote directory is:" ${CDJ}/${H2JAR}
+fi
 
 # Uncomment the following line if SmartHome Designer is desired
-wget -N -q --show-progress http://download.eclipse.org/smarthome/nightly-snapshots/$DES
+if [[ `wget -S --spider ${URL_SMD}/${DES}  2>&1 | grep 'HTTP/1.1 200 OK'` ]]; 
+then 
+	echo "Smarthome Designer file exists.  Fetching it";
+	wget -N -q --show-progress ${URL_SMD}/${DES}
+else
+	echo "Smarthome Designer file does not exist on remote server!!!  Check the website for a new rev."
+	echo "Remote directory is:" ${URL_SMD}/${DES}
+fi
 
-cd $HAB
-rm -rf $HAB/runtime
-rm -rf $HAB/userdata/cache/*
-rm -rf $HAB/userdata/tmp/*
+cd ${HAB}
+rm -rf ${HAB}/runtime
+rm -rf ${HAB}/userdata/cache/*
+rm -rf ${HAB}/userdata/tmp/*
 
 echo "Unzipping openHAB"
 unzip -n -q $DOWN/openhab-online-2.0.0-SNAPSHOT.zip
 
 # clear up some windows clutter not needed with *nix systems
-rm -f $HAB/*.bat
+rm -f ${HAB}/*.bat
 
-cd $HAB
+cd ${HAB}
 
 # Replace the karaf config file with mine
 echo "Replace karaf config file with mine"
-cp $HAB/runtime/karaf/etc/org.apache.karaf.shell.cfg $HAB/runtime/karaf/etc/org.apache.karaf.shell.cfg.orig
+cp ${HAB}/runtime/karaf/etc/org.apache.karaf.shell.cfg ${HAB}/runtime/karaf/etc/org.apache.karaf.shell.cfg.orig
 cp $DOWN/org.apache.karaf.shell.cfg $HAB/runtime/karaf/etc/org.apache.karaf.shell.cfg
 
 # We want zwave debugging on by default
 echo "Enabling debug mode for zwave binding"
 echo "" >> $HAB/runtime/karaf/etc/org.ops4j.pax.logging.cfg
-echo "# We want zwave debugging on by default" >> $HAB/runtime/karaf/etc/org.ops4j.pax.logging.cfg
-echo "log4j.logger.org.openhab.binding.zwave = DEBUG" >> $HAB/runtime/karaf/etc/org.ops4j.pax.logging.cfg
-echo "log4j.logger.org.openhab.binding.weather = WARN" >> $HAB/runtime/karaf/etc/org.ops4j.pax.logging.cfg
+echo "# We want zwave debugging on by default" >> ${HAB}/runtime/karaf/etc/org.ops4j.pax.logging.cfg
+echo "log4j.logger.org.openhab.binding.zwave = DEBUG" >> ${HAB}/runtime/karaf/etc/org.ops4j.pax.logging.cfg
+echo "log4j.logger.org.openhab.binding.weather = WARN" >> ${HAB}/runtime/karaf/etc/org.ops4j.pax.logging.cfg
 
 # uncomment the following 3 lines if the habmin2 jar is to be copied in
 echo "Copying HABmin to addons directory"
-rm $HAB/addons/org.openhab.ui.habmin*.jar
-cp $DOWN/$H2JAR $HAB/addons
+rm ${HAB}/addons/org.openhab.ui.habmin*.jar
+cp $DOWN/$H2JAR ${HAB}/addons
 
 # uncomment the following 4 lines if Eclipse Designer is also to be updated.  Be sure to save your work before updating.
 cd $SMD
@@ -59,5 +77,7 @@ unzip -q -o $DOWN/$DES
 
 # Start with empty log files
 echo "Zapping the log files"
-cp /dev/null $HAB/userdata/logs/openhab.log
-cp /dev/null $HAB/userdata/logs/events.log
+rm -f ${HAB}/userdata/logs/openhab.log.[0-9]
+cp /dev/null ${HAB}/userdata/logs/openhab.log
+cp /dev/null ${HAB}/userdata/logs/events.log
+cp /dev/null ${HAB}/userdata/logs/wrapper.log
