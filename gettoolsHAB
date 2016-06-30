@@ -2,20 +2,17 @@
 
 HAB_PARENT_DIR="/opt"
 
-FILE_LIST="gettoolsHAB updateHAB updateZWAVE debugZWAVE versionHAB backupHAB"
+FILE_LIST="updateHAB backupHAB versionHAB updateZWAVE debugZWAVE debugMYSQL"
 
 cd ${HAB_PARENT_DIR}
 
 echo "Pulling files from repo"
-wget -N -q --show-progress https://raw.githubusercontent.com/mhilbush/openhab-tools/master/updateHAB
-wget -N -q --show-progress https://raw.githubusercontent.com/mhilbush/openhab-tools/master/updateZWAVE
-wget -N -q --show-progress https://raw.githubusercontent.com/mhilbush/openhab-tools/master/debugZWAVE
-wget -N -q --show-progress https://raw.githubusercontent.com/mhilbush/openhab-tools/master/versionHAB
-wget -N -q --show-progress https://raw.githubusercontent.com/mhilbush/openhab-tools/master/backupHAB
-#wget -N -q --show-progress https://raw.githubusercontent.com/mhilbush/openhab-tools/master/gettoolsHAB
-
-chown mark:mark ${FILE_LIST}
-chmod 755 ${FILE_LIST}
+for f in ${FILE_LIST}
+do
+	wget -N -q --show-progress https://raw.githubusercontent.com/mhilbush/openhab-tools/master/${f}
+	chown mark:mark ${f}
+	chmod 755 ${f}
+done
 
 echo "Done!"
 
