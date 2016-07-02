@@ -1,83 +1,136 @@
 #!/bin/bash
 
-# The location for archive downloads
-DOWN="/opt/DOWN"
+# The location for downloads
+DOWN_DIR="/opt/DOWN"
+#DOWN_DIR="/home/mark/test/DOWN"
+
 # The location of the openHAB installation
-HAB="/opt/openhab"
+OH2_DIR="/opt/openhab"
+#OH2_DIR="/home/mark/test/openhab"
+
 # The location of SmartHome Designer
-SMD="/opt/ohdesign"
+SMD_DIR="/opt/ohdesign"
+#SMD_DIR="/home/mark/test/ohdesign"
+
+# Name of OH2 snapshot file
+OH2_FILE="openhab-online-2.0.0-SNAPSHOT.zip"
 # Update this variable if the name of the Habmin2 jar changes
-H2JAR="org.openhab.ui.habmin_0.1.6.jar"
+HM2_FILE="org.openhab.ui.habmin_0.1.7-SNAPSHOT.jar"
 # Update this if the name of the designer snapshot changes
-DES="eclipsesmarthome-incubation-0.9.0-SNAPSHOT-designer-linux64.zip"
+SMD_FILE="eclipsesmarthome-incubation-0.9.0-SNAPSHOT-designer-linux64.zip"
+
+# URL to OH2 online nightlies
+OH2_URL="https://openhab.ci.cloudbees.com/job/openHAB-Distribution/lastSuccessfulBuild/artifact/distributions/openhab-online/target"
 # URL to HABmin website
-URL_CDJ="https://github.com/cdjackson/HABmin2/raw/master/output"
+HM2_URL="https://github.com/cdjackson/HABmin2/raw/master/output"
 # URL to designer snapshot directory
-URL_SMD="http://download.eclipse.org/smarthome/nightly-snapshots"
+SMD_URL="http://download.eclipse.org/smarthome/nightly-snapshots"
 
-cd $DOWN
+# read the options
+TEMP=`getopt --options h --longoptions help,skip-designer,skip-habmin -n $0 -- "$@"`
+eval set -- "$TEMP"
 
-wget -N -q --show-progress https://openhab.ci.cloudbees.com/job/openHAB-Distribution/lastSuccessfulBuild/artifact/distributions/openhab-online/target/openhab-online-2.0.0-SNAPSHOT.zip
+# extract options and their arguments into variables.
+while true ; do
+    case "$1" in
+	-h | --help)
+		echo "Usage: $0 [--skip-designer] [--skip-habmin]"
+		exit 0 
+		;;
+	--skip-designer)
+		dflag=1
+		shift
+		;;
+	--skip-habmin)
+		hflag=1
+		shift
+		;;
+	*)
+		break 
+		;;
+    esac
+done
 
-# Uncomment the following line if Habmin2 is desired
-if [[ `wget -S --spider ${URL_CDJ}/${H2JAR}  2>&1 | grep 'HTTP/1.1 200 OK'` ]]; 
-then 
-	echo "HABmin file exists.  Fetching it";
-	wget -N -q --show-progress --content-disposition --no-check-certificate ${CDJ}/${H2JAR}
+cd ${DOWN_DIR}
+
+# Download openHAB2
+if [[ `wget -S --spider ${OH2_URL}/${OH2_FILE}  2>&1 | grep 'HTTP/1.1 200 OK'` ]]; then 
+	echo "openHAB file exists on remote server.  Fetching it";
+	wget -N -q --show-progress ${OH2_URL}/${OH2_FILE}
 else
-	echo "HABmin file does not exist on remote server!!! Check the website for a new rev."
-	echo "Remote directory is:" ${CDJ}/${H2JAR}
+	echo "Error: openHAB file does not exist on remote server!!!"
+	echo "openHAB URL is:" ${OH2_URL}/${OH2_FILE}
+	echo "Exiting now"
+	exit 1
 fi
 
-# Uncomment the following line if SmartHome Designer is desired
-if [[ `wget -S --spider ${URL_SMD}/${DES}  2>&1 | grep 'HTTP/1.1 200 OK'` ]]; 
-then 
-	echo "Smarthome Designer file exists.  Fetching it";
-	wget -N -q --show-progress ${URL_SMD}/${DES}
-else
-	echo "Smarthome Designer file does not exist on remote server!!!  Check the website for a new rev."
-	echo "Remote directory is:" ${URL_SMD}/${DES}
+if [ -z ${hflag} ]; then
+	# Download HABmin2
+	if [[ `wget -S --spider ${HM2_URL}/${HM2_FILE}  2>&1 | grep 'HTTP/1.1 200 OK'` ]]; then
+		echo "HABmin file exists on remote server.  Fetching it";
+		wget -N -q --show-progress --content-disposition --no-check-certificate ${HM2_URL}/${HM2_FILE}
+	else
+		echo "HABmin file does not exist on remote server!!! Check the website for a new rev."
+		echo "Remote directory is:" ${HM2_URL}/${HM2_FILE}
+	fi
 fi
 
-cd ${HAB}
-rm -rf ${HAB}/runtime
-rm -rf ${HAB}/userdata/cache/*
-rm -rf ${HAB}/userdata/tmp/*
+if [ -z ${dflag} ]; then
+	# Download SmartHome Designer
+	if [[ `wget -S --spider ${SMD_URL}/${SMD_FILE}  2>&1 | grep 'HTTP/1.1 200 OK'` ]]; then 
+		echo "Smarthome Designer file exists on remote server.  Fetching it";
+		wget -N -q --show-progress ${SMD_URL}/${SMD_FILE}
+	else
+		echo "Smarthome Designer file does not exist on remote server!!!  Check the website for a new rev."
+		echo "Remote directory is:" ${SMD_URL}/${SMD_FILE}
+	fi
+fi
+
+cd ${OH2_DIR}
+rm -rf ${OH2_DIR}/runtime
+rm -rf ${OH2_DIR}/userdata/cache/*
+rm -rf ${OH2_DIR}/userdata/tmp/*
 
 echo "Unzipping openHAB"
-unzip -n -q $DOWN/openhab-online-2.0.0-SNAPSHOT.zip
+unzip -n -q ${DOWN_DIR}/${OH2_FILE}
 
 # clear up some windows clutter not needed with *nix systems
-rm -f ${HAB}/*.bat
-
-cd ${HAB}
+rm -f ${OH2_DIR}/*.bat
 
 # Replace the karaf config file with mine
 echo "Replace karaf config file with mine"
-cp ${HAB}/runtime/karaf/etc/org.apache.karaf.shell.cfg ${HAB}/runtime/karaf/etc/org.apache.karaf.shell.cfg.orig
-cp $DOWN/org.apache.karaf.shell.cfg $HAB/runtime/karaf/etc/org.apache.karaf.shell.cfg
+cp ${OH2_DIR}/runtime/karaf/etc/org.apache.karaf.shell.cfg ${OH2_DIR}/runtime/karaf/etc/org.apache.karaf.shell.cfg.orig
+cp ${DOWN_DIR}/org.apache.karaf.shell.cfg ${OH2_DIR}/runtime/karaf/etc/org.apache.karaf.shell.cfg
 
 # We want zwave debugging on by default
 echo "Enabling debug mode for zwave binding"
-echo "" >> $HAB/runtime/karaf/etc/org.ops4j.pax.logging.cfg
-echo "# We want zwave debugging on by default" >> ${HAB}/runtime/karaf/etc/org.ops4j.pax.logging.cfg
-echo "log4j.logger.org.openhab.binding.zwave = DEBUG" >> ${HAB}/runtime/karaf/etc/org.ops4j.pax.logging.cfg
-echo "log4j.logger.org.openhab.binding.weather = WARN" >> ${HAB}/runtime/karaf/etc/org.ops4j.pax.logging.cfg
+echo "" >> ${OH2_DIR}/runtime/karaf/etc/org.ops4j.pax.logging.cfg
+echo "# We want zwave debugging on by default" >> ${OH2_DIR}/runtime/karaf/etc/org.ops4j.pax.logging.cfg
+echo "log4j.logger.org.openhab.binding.zwave = DEBUG" >> ${OH2_DIR}/runtime/karaf/etc/org.ops4j.pax.logging.cfg
+echo "# We don't want to hear every time there's a weather update" >> ${OH2_DIR}/runtime/karaf/etc/org.ops4j.pax.logging.cfg
+echo "log4j.logger.org.openhab.binding.weather = WARN" >> ${OH2_DIR}/runtime/karaf/etc/org.ops4j.pax.logging.cfg
 
-# uncomment the following 3 lines if the habmin2 jar is to be copied in
-echo "Copying HABmin to addons directory"
-rm ${HAB}/addons/org.openhab.ui.habmin*.jar
-cp $DOWN/$H2JAR ${HAB}/addons
+if [ -z ${hflag} ]; then
+	echo "Copying HABmin to addons directory"
+	# First remove any old versions in addons directory
+	rm -f ${OH2_DIR}/addons/org.openhab.ui.habmin*.jar
+	if [ -e ${DOWN_DIR}/${HM2_FILE} ]; then
+		cp ${DOWN_DIR}/${HM2_FILE} ${OH2_DIR}/addons
+	fi
+fi
 
-# uncomment the following 4 lines if Eclipse Designer is also to be updated.  Be sure to save your work before updating.
-cd $SMD
-rm -rf $SMD/p2/* $SMD/plugins 
-echo "Unzipping designer"
-unzip -q -o $DOWN/$DES
+if [ -z ${dflag} ]; then
+	echo "Unzipping designer"
+	cd ${SMD_DIR}
+	rm -rf ${SMD_DIR}/p2/* ${SMD_DIR}/plugins 
+	unzip -q -o ${DOWN_DIR}/${SMD_FILE}
+fi
 
-# Start with empty log files
-echo "Zapping the log files"
-rm -f ${HAB}/userdata/logs/openhab.log.[0-9]
-cp /dev/null ${HAB}/userdata/logs/openhab.log
-cp /dev/null ${HAB}/userdata/logs/events.log
-cp /dev/null ${HAB}/userdata/logs/wrapper.log
+if [ -d "${OH2_DIR}/userdata/logs" ]; then
+	# Start with empty log files
+	echo "Zapping the log files"
+	rm -f ${OH2_DIR}/userdata/logs/openhab.log.[0-9]
+	cp /dev/null ${OH2_DIR}/userdata/logs/openhab.log
+	cp /dev/null ${OH2_DIR}/userdata/logs/events.log
+	cp /dev/null ${OH2_DIR}/userdata/logs/wrapper.log
+fi
