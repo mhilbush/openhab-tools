@@ -8,6 +8,8 @@ DOWN_DIR="/opt/DOWN"
 OH2_DIR="/opt/openhab"
 #OH2_DIR="/home/mark/test/openhab"
 
+KARAF_DIR=${OH2_DIR}/runtime/karaf
+
 # The location of SmartHome Designer
 SMD_DIR="/opt/ohdesign"
 #SMD_DIR="/home/mark/test/ohdesign"
@@ -134,3 +136,27 @@ if [ -d "${OH2_DIR}/userdata/logs" ]; then
 	cp /dev/null ${OH2_DIR}/userdata/logs/events.log
 	cp /dev/null ${OH2_DIR}/userdata/logs/wrapper.log
 fi
+
+SERVICE_DIR=${DOWN_DIR}/service
+
+if [ ! -d ${SERVICE_DIR} ]; then
+	echo "The directory and files are not there: " ${SERVICE_DIR}
+	exit 1
+fi
+
+echo "Enabling openHAB as a service..."
+
+if [ ! -d ${KARAF_DIR}/lib/wrapper ]; then
+	mkdir --parents ${KARAF_DIR}/lib/wrapper
+fi
+
+cp -n ${SERVICE_DIR}/openHAB-wrapper ${KARAF_DIR}/bin/
+cp -n ${SERVICE_DIR}/openHAB-service ${KARAF_DIR}/bin/
+cp -n ${SERVICE_DIR}/openHAB.service ${KARAF_DIR}/bin/
+cp -n ${SERVICE_DIR}/openHAB-wrapper.conf ${KARAF_DIR}/etc/
+cp -n ${SERVICE_DIR}/libwrapper.so ${KARAF_DIR}/lib/wrapper/
+cp -n ${SERVICE_DIR}/karaf-wrapper.jar ${KARAF_DIR}/lib/wrapper/
+cp -n ${SERVICE_DIR}/karaf-wrapper-main.jar ${KARAF_DIR}/lib/wrapper/
+
+systemctl enable /opt/openhab/runtime/karaf/bin/openHAB.service
+
