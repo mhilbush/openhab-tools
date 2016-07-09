@@ -28,6 +28,11 @@ HM2_URL="https://github.com/cdjackson/HABmin2/raw/master/output"
 # URL to designer snapshot directory
 SMD_URL="http://download.eclipse.org/smarthome/nightly-snapshots"
 
+if [ $EUID != 0 ]; then
+	echo "Please run this as root!"
+	exit 1
+fi
+
 # read the options
 TEMP=`getopt --options h --longoptions help,skip-designer,skip-habmin -n $0 -- "$@"`
 eval set -- "$TEMP"

@@ -3,6 +3,11 @@
 # The location of the openHAB installation
 HAB="./openhab"
 
+if [ $EUID != 0 ]; then
+        echo "Please run this as root!"
+        exit 1
+fi
+
 cd /opt
 
 HOST=`hostname`
