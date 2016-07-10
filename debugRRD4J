@@ -1,6 +1,6 @@
 #!/bin/bash
 
-BUNDLE="org.openhab.binding.zwave"
+BUNDLE="org.openhab.persistence.rrd4j"
 
 KARAF_CLIENT="/opt/openhab/runtime/karaf/bin/client"
 

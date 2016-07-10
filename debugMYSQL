@@ -1,5 +1,7 @@
 #!/bin/bash
 
+BUNDLE="org.openhab.persistence.mysql"
+
 KARAF_CLIENT="/opt/openhab/runtime/karaf/bin/client"
 
 # read the options
@@ -14,11 +16,11 @@ while true ; do
 		exit 0 
 		;;
 	--on)
-		${KARAF_CLIENT} "log:set DEBUG org.openhab.persistence.mysql" 2>/dev/null
+		${KARAF_CLIENT} "log:set DEBUG ${BUNDLE}" 2>/dev/null
 		break 
 		;;
 	--off)
-		${KARAF_CLIENT} "log:set INFO org.openhab.persistence.mysql" 2>/dev/null
+		${KARAF_CLIENT} "log:set INFO ${BUNDLE}" 2>/dev/null
 		break 
 		;;
 	*)
@@ -28,4 +30,4 @@ while true ; do
     esac
 done
 
-${KARAF_CLIENT} "log:get org.openhab.persistence.mysql" 2>/dev/null | fgrep "org.openhab.persistence.mysql"
+${KARAF_CLIENT} "log:get ${BUNDLE}" 2>/dev/null | fgrep "${BUNDLE}"
