@@ -12,10 +12,12 @@ cd /opt
 
 HOST=`hostname`
 DATE=`date +%Y-%m-%d`
+BACKUPDIR=/mnt/tank/backup/openhab
 BACKUPFILE=openhab-backup@${HOST}_${DATE}_00.tar.gz
+IDFILE=/home/mark/.ssh/id_rsa
 
 echo "Backing up to file " $BACKUPFILE
 tar czf ${BACKUPFILE} ${HAB}
 
 echo "Copying backup to NAS..."
-scp ${BACKUPFILE} openhab@nas.nj.hilbush.com:~/${HOST}/${BACKUPFILE}
+scp -i ${IDFILE} ${BACKUPFILE} mark@nas.nj.hilbush.com:${BACKUPDIR}/${HOST}/${BACKUPFILE}
