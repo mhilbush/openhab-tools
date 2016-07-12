@@ -2,7 +2,7 @@
 
 HAB_PARENT_DIR="/opt"
 
-FILE_LIST="updateHAB backupHAB versionHAB updateZWAVE debugZWAVE debugMYSQL debugRRD4J"
+FILE_LIST="updateHAB backupHAB serviceHAB versionHAB updateZWAVE debugZWAVE debugMYSQL debugRRD4J"
 
 cd ${HAB_PARENT_DIR}
 
