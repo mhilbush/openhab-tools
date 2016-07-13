@@ -1,0 +1,20 @@
+#!/bin/bash
+
+# The location of the openHAB installation
+OH2_DIR="/opt/openhab"
+
+if [ $EUID != 0 ]; then
+        echo "Please run this as root!"
+        exit 1
+fi
+
+
+systemctl stop openHAB
+sleep 2
+
+cp /dev/null ${OH2_DIR}/userdata/logs/openhab.log
+cp /dev/null ${OH2_DIR}/userdata/logs/events.log
+cp /dev/null ${OH2_DIR}/userdata/logs/wrapper.log
+
+systemctl start openHAB
+
