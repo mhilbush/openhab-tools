@@ -1,0 +1,17 @@
+#!/bin/bash
+
+HAB_PARENT_DIR="/opt"
+
+FILE_LIST="gettoolsHAB"
+
+cd ${HAB_PARENT_DIR}
+
+echo "Pulling files from repo"
+for f in ${FILE_LIST}
+do
+	wget -N -q --show-progress https://raw.githubusercontent.com/mhilbush/openhab-tools/master/${f}
+	chown mark:mark ${f}
+	chmod 755 ${f}
+done
+
+echo "Done!"
