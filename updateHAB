@@ -33,6 +33,13 @@ if [ $EUID != 0 ]; then
 	exit 1
 fi
 
+ACTIVESTATE=`systemctl --lines=0 show openHAB | fgrep ActiveState`
+if [ ${ACTIVESTATE#*=} = "active" ] ; then
+	echo "openHAB is running.  Please stop it before running the update."
+	exit 1
+fi
+
+
 # read the options
 TEMP=`getopt --options h --longoptions help,skip-designer,skip-habmin -n $0 -- "$@"`
 eval set -- "$TEMP"
