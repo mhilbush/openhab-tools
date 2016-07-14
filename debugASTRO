@@ -1,0 +1,33 @@
+#!/bin/bash
+
+BUNDLE="org.openhab.binding.astro"
+
+KARAF_CLIENT="/opt/openhab/runtime/karaf/bin/client"
+
+# read the options
+TEMP=`getopt --options h --longoptions help,on,off -n $0 -- "$@"`
+eval set -- "$TEMP"
+
+# extract options and their arguments into variables.
+while true ; do
+    case "$1" in
+	-h | --help)
+		echo "Usage: $0 [--on] [--off]"
+		exit 0 
+		;;
+	--on)
+		${KARAF_CLIENT} "log:set DEBUG ${BUNDLE}" 2>/dev/null
+		break 
+		;;
+	--off)
+		${KARAF_CLIENT} "log:set INFO ${BUNDLE}" 2>/dev/null
+		break 
+		;;
+	*)
+		echo "Reporting current log level..."
+		break 
+		;;
+    esac
+done
+
+${KARAF_CLIENT} "log:get ${BUNDLE}" 2>/dev/null | fgrep "${BUNDLE}"
