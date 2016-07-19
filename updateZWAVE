@@ -2,9 +2,13 @@
 
 KARAF_DIR="/opt/openhab/runtime/karaf"
 
-${KARAF_DIR}/bin/client -l 0 -b << EOF
-bundle:update org.openhab.binding.zwave
-list org.openhab.binding.zwave
-log:get org.openhab.binding.zwave
-EOF
+BINDING="org.openhab.binding.zwave"
+COMMANDS="list -s ${BINDING}; \
+	log:set DEBUG ${BINDING}; \
+	bundle:update ${BINDING}; \
+	list -s ${BINDING}; \
+	log:get ${BINDING}"
 
+KARAF_DIR="/opt/openhab/runtime/karaf"
+
+${KARAF_DIR}/bin/client -l 0 -- ${COMMANDS}

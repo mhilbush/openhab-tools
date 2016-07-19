@@ -1,10 +1,18 @@
 #!/bin/bash
 
+BUNDLES="list -s \
+	org.apache.karaf.shell.core \
+	org.apache.karaf.wrapper.core \
+	org.eclipse.smarthome.core \
+	org.openhab.binding.astro \
+	org.openhab.binding.http \
+	org.openhab.binding.systeminfo \
+	org.openhab.binding.zwave \
+	org.openhab.persistence.mysql \
+	org.openhab.persistence.rrd4j \
+	org.openhab.action.mail"
+
 KARAF_DIR="/opt/openhab/runtime/karaf"
 
-${KARAF_DIR}/bin/client -l 0 -b << EOF
-list org.eclipse.smarthome.core
-list org.openhab.ui.habmin
-list org.openhab.binding.zwave
-EOF
+${KARAF_DIR}/bin/client -l 0 -- ${BUNDLES}
 
