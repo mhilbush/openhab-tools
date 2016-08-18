@@ -110,7 +110,7 @@ echo "log4j.logger.org.openhab.binding.weather = WARN" >> ${OH2_DIR}/runtime/kar
 echo "# Debugging for globalcache binding" >> ${OH2_DIR}/runtime/karaf/etc/org.ops4j.pax.logging.cfg
 echo "log4j.logger.org.openhab.binding.globalcache = INFO" >> ${OH2_DIR}/runtime/karaf/etc/org.ops4j.pax.logging.cfg
 echo "# Debugging for squeezebox binding" >> ${OH2_DIR}/runtime/karaf/etc/org.ops4j.pax.logging.cfg
-echo "log4j.logger.org.openhab.binding.squeezebox = INFO >> ${OH2_DIR}/runtime/karaf/etc/org.ops4j.pax.logging.cfg
+echo "log4j.logger.org.openhab.binding.squeezebox = INFO" >> ${OH2_DIR}/runtime/karaf/etc/org.ops4j.pax.logging.cfg
 
 if [ -z ${dflag} ]; then
 	echo "Unzipping designer"
