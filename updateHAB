@@ -107,6 +107,10 @@ echo "# We want zwave debugging on by default" >> ${OH2_DIR}/runtime/karaf/etc/o
 echo "log4j.logger.org.openhab.binding.zwave = DEBUG" >> ${OH2_DIR}/runtime/karaf/etc/org.ops4j.pax.logging.cfg
 echo "# We don't want to hear every time there's a weather update" >> ${OH2_DIR}/runtime/karaf/etc/org.ops4j.pax.logging.cfg
 echo "log4j.logger.org.openhab.binding.weather = WARN" >> ${OH2_DIR}/runtime/karaf/etc/org.ops4j.pax.logging.cfg
+echo "# Debugging for globalcache binding" >> ${OH2_DIR}/runtime/karaf/etc/org.ops4j.pax.logging.cfg
+echo "log4j.logger.org.openhab.binding.globalcache = INFO" >> ${OH2_DIR}/runtime/karaf/etc/org.ops4j.pax.logging.cfg
+echo "# Debugging for squeezebox binding" >> ${OH2_DIR}/runtime/karaf/etc/org.ops4j.pax.logging.cfg
+echo "log4j.logger.org.openhab.binding.squeezebox = INFO >> ${OH2_DIR}/runtime/karaf/etc/org.ops4j.pax.logging.cfg
 
 if [ -z ${dflag} ]; then
 	echo "Unzipping designer"
