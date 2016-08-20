@@ -5,7 +5,9 @@ BUNDLES="list -s \
 	org.apache.karaf.wrapper.core \
 	org.eclipse.smarthome.core \
 	org.openhab.binding.astro \
+	org.openhab.binding.globalcache \
 	org.openhab.binding.http \
+	org.openhab.binding.squeezebox \
 	org.openhab.binding.systeminfo \
 	org.openhab.binding.weather \
 	org.openhab.binding.zwave \
