@@ -11,6 +11,7 @@ OH2_DIR="/opt/openhab"
 # Location of Karaf runtime
 KARAF_DIR="${OH2_DIR}/runtime/karaf"
 SHELL_CFG="org.apache.karaf.shell.cfg"
+LOGGING_CFG="org.ops4j.pax.logging.cfg"
 
 # The location of SmartHome Designer
 SMD_DIR="/opt/ohdesign"
@@ -29,7 +30,7 @@ OH2_URL="https://openhab.ci.cloudbees.com/job/openHAB-Distribution/lastSuccessfu
 SMD_URL="http://download.eclipse.org/smarthome/nightly-snapshots"
 
 # Name of the file in ${DOWN_DIR} containing my logging requirements
-LOGGER_CFG="my-logger-definitions.cfg"
+MY_LOGGER_CFG="my-logger-definitions.cfg"
 
 if [ $EUID != 0 ]; then
 	echo "Please run this as root!"
@@ -100,7 +101,7 @@ unzip -n -q ${DOWN_DIR}/${OH2_FILE}
 rm -f ${OH2_DIR}/*.bat
 
 # Edit some of the settings in the Karaf shell config file
-echo "Editing Karaf shell.cfg file"
+echo "Changing ssh settings in Karaf shell config file ${SHELL_CFG}"
 echo "${KARAF_DIR}/etc/${SHELL_CFG}"
 cat ${KARAF_DIR}/etc/${SHELL_CFG} | sed -e 's/sshHost = 127.0.0.1/#&\nsshHost = 0.0.0.0/' \
 		    -e 's/sshIdleTimeout = 1800000/#&\nsshIdleTimeout = 72000000/' > ${KARAF_DIR}/etc/${SHELL_CFG}.new
@@ -109,8 +110,9 @@ mv ${KARAF_DIR}/etc/${SHELL_CFG}.new ${KARAF_DIR}/etc/${SHELL_CFG}
 
 # Add my specific logging requirements to the Karaf logging configuration file
 echo "Adding my logging requirements to ${LOGGER_CFG}"
-if [ -r "${DOWN_DIR}/${LOGGER_CFG}" ]; then
-	cat ${DOWN_DIR}/${LOGGER_CFG} >> ${OH2_DIR}/runtime/karaf/etc/org.ops4j.pax.logging.cfg
+if [ -r "${DOWN_DIR}/${MY_LOGGER_CFG}" ]; then
+	cp ${KARAF_DIR}/etc/${LOGGER_CFG} ${KARAF_DIR}/etc/${LOGGER_CFG}.orig
+	cat ${DOWN_DIR}/${MY_LOGGER_CFG} >> ${KARAF_DIR}/etc/${LOGGER_CFG}
 fi
 
 if [ -z ${dflag} ]; then
