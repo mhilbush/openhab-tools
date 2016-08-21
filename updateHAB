@@ -9,7 +9,8 @@ OH2_DIR="/opt/openhab"
 #OH2_DIR="/home/mark/test/openhab"
 
 # Location of Karaf runtime
-KARAF_DIR=${OH2_DIR}/runtime/karaf
+KARAF_DIR="${OH2_DIR}/runtime/karaf"
+SHELL_CFG="org.apache.karaf.shell.cfg"
 
 # The location of SmartHome Designer
 SMD_DIR="/opt/ohdesign"
@@ -26,6 +27,9 @@ OH2_URL="https://openhab.ci.cloudbees.com/job/openHAB-Distribution/lastSuccessfu
 
 # URL to designer snapshot directory
 SMD_URL="http://download.eclipse.org/smarthome/nightly-snapshots"
+
+# Name of the file in ${DOWN_DIR} containing my logging requirements
+LOGGER_CFG="my-logger-definitions.cfg"
 
 if [ $EUID != 0 ]; then
 	echo "Please run this as root!"
@@ -95,22 +99,19 @@ unzip -n -q ${DOWN_DIR}/${OH2_FILE}
 # clear up some windows clutter
 rm -f ${OH2_DIR}/*.bat
 
-# Replace the karaf config file with mine
-echo "Replace karaf config file with mine"
-cp ${OH2_DIR}/runtime/karaf/etc/org.apache.karaf.shell.cfg ${OH2_DIR}/runtime/karaf/etc/org.apache.karaf.shell.cfg.orig
-cp ${DOWN_DIR}/org.apache.karaf.shell.cfg ${OH2_DIR}/runtime/karaf/etc/org.apache.karaf.shell.cfg
+# Edit some of the settings in the Karaf shell config file
+echo "Editing Karaf shell.cfg file"
+echo "${KARAF_DIR}/etc/${SHELL_CFG}"
+cat ${KARAF_DIR}/etc/${SHELL_CFG} | sed -e 's/sshHost = 127.0.0.1/#&\nsshHost = 0.0.0.0/' \
+		    -e 's/sshIdleTimeout = 1800000/#&\nsshIdleTimeout = 72000000/' > ${KARAF_DIR}/etc/${SHELL_CFG}.new
+cp ${KARAF_DIR}/etc/${SHELL_CFG} ${KARAF_DIR}/etc/${SHELL_CFG}.orig
+mv ${KARAF_DIR}/etc/${SHELL_CFG}.new ${KARAF_DIR}/etc/${SHELL_CFG}
 
-# We want zwave debugging on by default
-echo "Enabling debug mode for zwave binding"
-echo "" >> ${OH2_DIR}/runtime/karaf/etc/org.ops4j.pax.logging.cfg
-echo "# We want zwave debugging on by default" >> ${OH2_DIR}/runtime/karaf/etc/org.ops4j.pax.logging.cfg
-echo "log4j.logger.org.openhab.binding.zwave = DEBUG" >> ${OH2_DIR}/runtime/karaf/etc/org.ops4j.pax.logging.cfg
-echo "# We don't want to hear every time there's a weather update" >> ${OH2_DIR}/runtime/karaf/etc/org.ops4j.pax.logging.cfg
-echo "log4j.logger.org.openhab.binding.weather = WARN" >> ${OH2_DIR}/runtime/karaf/etc/org.ops4j.pax.logging.cfg
-echo "# Debugging for globalcache binding" >> ${OH2_DIR}/runtime/karaf/etc/org.ops4j.pax.logging.cfg
-echo "log4j.logger.org.openhab.binding.globalcache = INFO" >> ${OH2_DIR}/runtime/karaf/etc/org.ops4j.pax.logging.cfg
-echo "# Debugging for squeezebox binding" >> ${OH2_DIR}/runtime/karaf/etc/org.ops4j.pax.logging.cfg
-echo "log4j.logger.org.openhab.binding.squeezebox = INFO" >> ${OH2_DIR}/runtime/karaf/etc/org.ops4j.pax.logging.cfg
+# Add my specific logging requirements to the Karaf logging configuration file
+echo "Adding my logging requirements to ${LOGGER_CFG}"
+if [ -r "${DOWN_DIR}/${LOGGER_CFG}" ]; then
+	cat ${DOWN_DIR}/${LOGGER_CFG} >> ${OH2_DIR}/runtime/karaf/etc/org.ops4j.pax.logging.cfg
+fi
 
 if [ -z ${dflag} ]; then
 	echo "Unzipping designer"
@@ -127,6 +128,7 @@ if [ -d "${OH2_DIR}/userdata/logs" ]; then
 	cp /dev/null ${OH2_DIR}/userdata/logs/openhab.log
 	cp /dev/null ${OH2_DIR}/userdata/logs/events.log
 	cp /dev/null ${OH2_DIR}/userdata/logs/wrapper.log
+	cp /dev/null ${OH2_DIR}/userdata/logs/zwave.log
 fi
 
 SERVICE_DIR=${DOWN_DIR}/service
@@ -151,4 +153,3 @@ cp -n ${SERVICE_DIR}/karaf-wrapper.jar ${KARAF_DIR}/lib/wrapper/
 cp -n ${SERVICE_DIR}/karaf-wrapper-main.jar ${KARAF_DIR}/lib/wrapper/
 
 systemctl enable /opt/openhab/runtime/karaf/bin/openHAB.service
-
