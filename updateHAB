@@ -106,7 +106,7 @@ cp ${KARAF_DIR}/etc/${SHELL_CFG} ${KARAF_DIR}/etc/${SHELL_CFG}.orig
 mv ${KARAF_DIR}/etc/${SHELL_CFG}.new ${KARAF_DIR}/etc/${SHELL_CFG}
 
 # Add my specific logging requirements to the Karaf logging configuration file
-echo "Adding my logging requirements to ${LOGGER_CFG}"
+echo "Adding my logging requirements to ${LOGGING_CFG}"
 if [ -r "${DOWN_DIR}/${MY_LOGGING_CFG}" ]; then
 	cp ${KARAF_DIR}/etc/${LOGGING_CFG} ${KARAF_DIR}/etc/${LOGGING_CFG}.orig
 	cat ${DOWN_DIR}/${MY_LOGGING_CFG} >> ${KARAF_DIR}/etc/${LOGGING_CFG}
