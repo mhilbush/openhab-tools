@@ -15,6 +15,7 @@ sleep 2
 cp /dev/null ${OH2_DIR}/userdata/logs/openhab.log
 cp /dev/null ${OH2_DIR}/userdata/logs/events.log
 cp /dev/null ${OH2_DIR}/userdata/logs/wrapper.log
+cp /dev/null ${OH2_DIR}/userdata/logs/zwave.log
 
 systemctl start openHAB
 
