@@ -2,9 +2,9 @@
 
 HAB_PARENT_DIR="/opt"
 
-FILE_LIST="updateHAB backupHAB serviceHAB restartHAB versionHAB updateZWAVE \
-	   debugZWAVE debugGC debugASTRO debugMYSQL debugRRD4J debugSMARTHOME \
-	   debugSQUEEZE"
+FILE_LIST= "updateHAB backupHAB serviceHAB startHAB stopHAB restartHAB \
+            versionHAB updateZWAVE \
+            debugZWAVE debugGC debugASTRO debugMYSQL debugRRD4J debugSMARTHOME debugSQUEEZE"
 
 cd ${HAB_PARENT_DIR}
 
