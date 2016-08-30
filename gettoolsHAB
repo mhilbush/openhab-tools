@@ -2,7 +2,7 @@
 
 HAB_PARENT_DIR="/opt"
 
-FILE_LIST= "updateHAB backupHAB serviceHAB startHAB stopHAB restartHAB \
+FILE_LIST="updateHAB backupHAB serviceHAB startHAB stopHAB restartHAB \
             versionHAB updateZWAVE \
             debugZWAVE debugGC debugASTRO debugMYSQL debugRRD4J debugSMARTHOME debugSQUEEZE"
 
