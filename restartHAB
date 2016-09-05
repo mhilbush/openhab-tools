@@ -17,7 +17,7 @@ cp /dev/null ${OH2_DIR}/userdata/logs/events.log
 cp /dev/null ${OH2_DIR}/userdata/logs/wrapper.log
 cp /dev/null ${OH2_DIR}/userdata/logs/zwave.log
 
-rm -f *.([0-9]|10)
+rm -f *.[1-9]
 
 systemctl start openHAB
 
