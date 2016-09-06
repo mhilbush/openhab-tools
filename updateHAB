@@ -122,8 +122,10 @@ fi
 if [ -d "${OH2_DIR}/userdata/logs" ]; then
 	# Start with empty log files
 	echo "Zapping the log files"
-	rm -f ${OH2_DIR}/userdata/logs/openhab.log.[0-9]
-	rm -f ${OH2_DIR}/userdata/logs/events.log.[0-9]
+	rm -f ${OH2_DIR}/userdata/logs/wrapper.log.[1-9]
+	rm -f ${OH2_DIR}/userdata/logs/openhab.log.[1-9]
+	rm -f ${OH2_DIR}/userdata/logs/events.log.[1-9]
+	rm -f ${OH2_DIR}/userdata/logs/zwave.log.[1-9]
 	cp /dev/null ${OH2_DIR}/userdata/logs/openhab.log
 	cp /dev/null ${OH2_DIR}/userdata/logs/events.log
 	cp /dev/null ${OH2_DIR}/userdata/logs/wrapper.log
