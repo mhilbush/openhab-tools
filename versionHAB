@@ -7,7 +7,9 @@ BUNDLES="list -s \
 	org.openhab.binding.astro \
 	org.openhab.binding.globalcache \
 	org.openhab.binding.http \
+	org.openhab.binding.ntp \
 	org.openhab.binding.squeezebox \
+	org.openhab.binding.sunsetwx \
 	org.openhab.binding.systeminfo \
 	org.openhab.binding.weather \
 	org.openhab.binding.zwave \
