@@ -9,7 +9,9 @@ OH2_DIR="/opt/openhab"
 #OH2_DIR="/home/mark/test/openhab"
 
 # Location of Karaf runtime
-KARAF_DIR="${OH2_DIR}/runtime/karaf"
+KARAFBIN_DIR="${OH2_DIR}/runtime/bin"
+KARAFLIB_DIR="${OH2_DIR}/runtime/lib"
+KARAFETC_DIR="${OH2_DIR}/userdata/etc"
 SHELL_CFG="org.apache.karaf.shell.cfg"
 LOGGING_CFG="org.ops4j.pax.logging.cfg"
 MY_LOGGING_CFG="my-logger-definitions.cfg"
@@ -50,7 +52,7 @@ eval set -- "$TEMP"
 while true ; do
     case "$1" in
 	-h | --help)
-		echo "Usage: $0 [--skip-designer] [--skip-habmin]"
+		echo "Usage: $0 [--skip-designer]"
 		exit 0 
 		;;
 	--skip-designer)
@@ -99,18 +101,18 @@ unzip -n -q ${DOWN_DIR}/${OH2_FILE}
 rm -f ${OH2_DIR}/*.bat
 
 # Edit some of the settings in the Karaf shell config file
-echo "Changing ssh settings in Karaf shell config file ${SHELL_CFG}"
-cat ${KARAF_DIR}/etc/${SHELL_CFG} | sed -e 's/sshHost = 127.0.0.1/#&\nsshHost = 0.0.0.0/' \
-		    -e 's/sshIdleTimeout = 1800000/#&\nsshIdleTimeout = 72000000/' > ${KARAF_DIR}/etc/${SHELL_CFG}.new
-cp ${KARAF_DIR}/etc/${SHELL_CFG} ${KARAF_DIR}/etc/${SHELL_CFG}.orig
-mv ${KARAF_DIR}/etc/${SHELL_CFG}.new ${KARAF_DIR}/etc/${SHELL_CFG}
+#echo "Changing ssh settings in Karaf shell config file ${SHELL_CFG}"
+#cat ${KARAFETC_DIR}/${SHELL_CFG} | sed -e 's/sshHost = 127.0.0.1/#&\nsshHost = 0.0.0.0/' \
+#		    -e 's/sshIdleTimeout = 1800000/#&\nsshIdleTimeout = 72000000/' > ${KARAFETC_DIR}/${SHELL_CFG}.new
+#cp ${KARAFETC_DIR}/${SHELL_CFG} ${KARAFETC_DIR}/${SHELL_CFG}.orig
+#mv ${KARAFETC_DIR}/${SHELL_CFG}.new ${KARAFETC_DIR}/${SHELL_CFG}
 
 # Add my specific logging requirements to the Karaf logging configuration file
-echo "Adding my logging requirements to ${LOGGING_CFG}"
-if [ -r "${DOWN_DIR}/${MY_LOGGING_CFG}" ]; then
-	cp ${KARAF_DIR}/etc/${LOGGING_CFG} ${KARAF_DIR}/etc/${LOGGING_CFG}.orig
-	cat ${DOWN_DIR}/${MY_LOGGING_CFG} >> ${KARAF_DIR}/etc/${LOGGING_CFG}
-fi
+#echo "Adding my logging requirements to ${LOGGING_CFG}"
+#if [ -r "${DOWN_DIR}/${MY_LOGGING_CFG}" ]; then
+#	cp ${KARAFETC_DIR}/${LOGGING_CFG} ${KARAFETC_DIR}/${LOGGING_CFG}.orig
+#	cat ${DOWN_DIR}/${MY_LOGGING_CFG} >> ${KARAFETC_DIR}/${LOGGING_CFG}
+#fi
 
 if [ -z ${dflag} ]; then
 	echo "Unzipping designer"
@@ -141,16 +143,17 @@ fi
 
 echo "Enabling openHAB as a service..."
 
-if [ ! -d ${KARAF_DIR}/lib/wrapper ]; then
-	mkdir --parents ${KARAF_DIR}/lib/wrapper
+if [ ! -d ${KARAFLIB_DIR}/wrapper ]; then
+	mkdir --parents ${KARAFLIB_DIR}/wrapper
 fi
 
-cp -n ${SERVICE_DIR}/openHAB-wrapper ${KARAF_DIR}/bin/
-cp -n ${SERVICE_DIR}/openHAB-service ${KARAF_DIR}/bin/
-cp -n ${SERVICE_DIR}/openHAB.service ${KARAF_DIR}/bin/
-cp -n ${SERVICE_DIR}/openHAB-wrapper.conf ${KARAF_DIR}/etc/
-cp -n ${SERVICE_DIR}/libwrapper.so ${KARAF_DIR}/lib/wrapper/
-cp -n ${SERVICE_DIR}/karaf-wrapper.jar ${KARAF_DIR}/lib/wrapper/
-cp -n ${SERVICE_DIR}/karaf-wrapper-main.jar ${KARAF_DIR}/lib/wrapper/
+cp -n ${SERVICE_DIR}/openHAB-wrapper        ${KARAFBIN_DIR}
+cp -n ${SERVICE_DIR}/openHAB-service        ${KARAFBIN_DIR}
+cp -n ${SERVICE_DIR}/openHAB.service        ${KARAFBIN_DIR}
+cp -n ${SERVICE_DIR}/libwrapper.so          ${KARAFLIB_DIR}/wrapper/
+cp -n ${SERVICE_DIR}/karaf-wrapper.jar      ${KARAFLIB_DIR}/wrapper/
+cp -n ${SERVICE_DIR}/karaf-wrapper-main.jar ${KARAFLIB_DIR}/wrapper/
+#cp -n ${SERVICE_DIR}/openHAB-wrapper.conf   ${KARAFETC_DIR}/
 
-systemctl enable /opt/openhab/runtime/karaf/bin/openHAB.service
+systemctl enable ${KARAFBIN_DIR}/openHAB.service
+

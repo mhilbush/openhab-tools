@@ -1,6 +1,6 @@
 #!/bin/bash
 
-KARAF_DIR="/opt/openhab/runtime/karaf"
+KARAF_DIR="/opt/openhab/runtime"
 
 BINDING="org.openhab.binding.zwave"
 COMMANDS="list -s ${BINDING}; \

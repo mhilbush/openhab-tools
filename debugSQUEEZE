@@ -2,7 +2,7 @@
 
 BUNDLE="org.openhab.binding.squeezebox"
 
-KARAF_CLIENT="/opt/openhab/runtime/karaf/bin/client"
+KARAF_CLIENT="/opt/openhab/runtime/bin/client"
 
 # read the options
 TEMP=`getopt --options h --longoptions help,on,off -n $0 -- "$@"`
