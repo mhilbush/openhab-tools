@@ -78,8 +78,8 @@ else
 	exit 1
 fi
 
+# Download SmartHome Designer
 if [ -z ${dflag} ]; then
-	# Download SmartHome Designer
 	if [[ `wget -S --spider ${SMD_URL}/${SMD_FILE}  2>&1 | grep 'HTTP/1.1 200 OK'` ]]; then 
 		echo "Smarthome Designer file exists on remote server.  Fetching it";
 		wget -N -q --show-progress ${SMD_URL}/${SMD_FILE}
@@ -89,6 +89,7 @@ if [ -z ${dflag} ]; then
 	fi
 fi
 
+# These directories need to be deleted
 cd ${OH2_DIR}
 rm -rf ${OH2_DIR}/runtime
 rm -rf ${OH2_DIR}/userdata/cache/*
@@ -97,23 +98,10 @@ rm -rf ${OH2_DIR}/userdata/tmp/*
 echo "Unzipping openHAB"
 unzip -n -q ${DOWN_DIR}/${OH2_FILE}
 
-# clear up some windows clutter
+# Clear up some windows clutter
 rm -f ${OH2_DIR}/*.bat
 
-# Edit some of the settings in the Karaf shell config file
-#echo "Changing ssh settings in Karaf shell config file ${SHELL_CFG}"
-#cat ${KARAFETC_DIR}/${SHELL_CFG} | sed -e 's/sshHost = 127.0.0.1/#&\nsshHost = 0.0.0.0/' \
-#		    -e 's/sshIdleTimeout = 1800000/#&\nsshIdleTimeout = 72000000/' > ${KARAFETC_DIR}/${SHELL_CFG}.new
-#cp ${KARAFETC_DIR}/${SHELL_CFG} ${KARAFETC_DIR}/${SHELL_CFG}.orig
-#mv ${KARAFETC_DIR}/${SHELL_CFG}.new ${KARAFETC_DIR}/${SHELL_CFG}
-
-# Add my specific logging requirements to the Karaf logging configuration file
-#echo "Adding my logging requirements to ${LOGGING_CFG}"
-#if [ -r "${DOWN_DIR}/${MY_LOGGING_CFG}" ]; then
-#	cp ${KARAFETC_DIR}/${LOGGING_CFG} ${KARAFETC_DIR}/${LOGGING_CFG}.orig
-#	cat ${DOWN_DIR}/${MY_LOGGING_CFG} >> ${KARAFETC_DIR}/${LOGGING_CFG}
-#fi
-
+# If we downloaded the designer, unzip it
 if [ -z ${dflag} ]; then
 	echo "Unzipping designer"
 	cd ${SMD_DIR}
@@ -121,8 +109,8 @@ if [ -z ${dflag} ]; then
 	unzip -q -o ${DOWN_DIR}/${SMD_FILE}
 fi
 
+# Start with empty log files
 if [ -d "${OH2_DIR}/userdata/logs" ]; then
-	# Start with empty log files
 	echo "Zapping the log files"
 	rm -f ${OH2_DIR}/userdata/logs/wrapper.log.[1-9]
 	rm -f ${OH2_DIR}/userdata/logs/openhab.log.[1-9]
