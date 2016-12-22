@@ -65,6 +65,16 @@ while true ; do
     esac
 done
 
+if [ ! -d ${OH2_DIR} ]; then
+    echo "${OH2_DIR} directory does not exist!"
+    exit 1
+fi
+
+if [ ! -d ${DOWN_DIR} ]; then
+    echo "${DOWN_DIR} directory does not exist!"
+    exit 1
+fi
+
 cd ${DOWN_DIR}
 
 # Download openHAB2
@@ -89,12 +99,18 @@ if [ -z ${dflag} ]; then
 	fi
 fi
 
-# These directories need to be deleted
+# These files and directories need to be deleted
+echo "Deleting old directories and files"
 cd ${OH2_DIR}
 rm -rf ${OH2_DIR}/runtime
-rm -rf ${OH2_DIR}/userdata/cache/*
-rm -rf ${OH2_DIR}/userdata/tmp/*
+rm -rf ${OH2_DIR}/userdata/cache
+rm -rf ${OH2_DIR}/userdata/tmp
+# Deletes org.apache.karaf.*.*, excluding org.apache.karaf.shell.cfg
+find ${KARAFETC_DIR} -name "org.apache.karaf.*.*" ! -name "org.apache.karaf.shell.cfg" -type f -exec rm -f {} +
+# Deletes *.properties
+find ${KARAFETC_DIR} -name "*.properties" -type f -exec rm -f {} +
 
+# Lay down the files from the new version (not overwriting files that exist)
 echo "Unzipping openHAB"
 unzip -n -q ${DOWN_DIR}/${OH2_FILE}
 
