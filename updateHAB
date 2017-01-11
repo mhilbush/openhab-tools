@@ -21,13 +21,13 @@ SMD_DIR="/opt/ohdesign"
 #SMD_DIR="/home/mark/test/ohdesign"
 
 # Name of OH2 snapshot file. Update this if this name changes.
-OH2_FILE="openhab-online-2.0.0-SNAPSHOT.zip"
+OH2_FILE="openhab-2.0.0-SNAPSHOT.zip"
 
 # Name of the Designer snapshot file. Update this if this name changes.
 SMD_FILE="eclipsesmarthome-incubation-0.9.0-SNAPSHOT-designer-linux64.zip"
 
 # URL to OH2 online nightlies
-OH2_URL="https://openhab.ci.cloudbees.com/job/openHAB-Distribution/lastSuccessfulBuild/artifact/distributions/openhab-online/target"
+OH2_URL="https://openhab.ci.cloudbees.com/job/openHAB-Distribution/lastSuccessfulBuild/artifact/distributions/openhab/target"
 
 # URL to designer snapshot directory
 SMD_URL="http://download.eclipse.org/smarthome/nightly-snapshots"
