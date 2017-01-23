@@ -21,7 +21,7 @@ SMD_DIR="/opt/ohdesign"
 #SMD_DIR="/home/mark/test/ohdesign"
 
 # Name of OH2 snapshot file. Update this if this name changes.
-OH2_FILE="openhab-2.0.0-SNAPSHOT.zip"
+OH2_FILE="openhab-2.1.0-SNAPSHOT.zip"
 
 # Name of the Designer snapshot file. Update this if this name changes.
 SMD_FILE="eclipsesmarthome-incubation-0.9.0-SNAPSHOT-designer-linux64.zip"
