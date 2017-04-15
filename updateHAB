@@ -15,6 +15,7 @@ KARAFETC_DIR="${OH2_DIR}/userdata/etc"
 SHELL_CFG="org.apache.karaf.shell.cfg"
 LOGGING_CFG="org.ops4j.pax.logging.cfg"
 MY_LOGGING_CFG="my-logger-definitions.cfg"
+HABPANEL_CONFIG="${OH2_DIR}/userdata/config/org/openhab/habpanel.config"
 
 # The location of SmartHome Designer
 SMD_DIR="/opt/ohdesign"
@@ -97,6 +98,12 @@ if [ -z ${dflag} ]; then
 		echo "Smarthome Designer file does not exist on remote server!!!  Check the website for a new rev."
 		echo "Remote directory is:" ${SMD_URL}/${SMD_FILE}
 	fi
+fi
+
+# Makes a backup of the HABpanel config file
+if [ -f ${HABPANEL_CONFIG} ]; then
+    echo "Backing up HABpanel confgig file: " ${HABPANEL_CONFIG}
+    cp ${HABPANEL_CONFIG} ${DOWN_DIR}
 fi
 
 # These files and directories need to be deleted
