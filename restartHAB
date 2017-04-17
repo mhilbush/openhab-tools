@@ -9,7 +9,7 @@ if [ $EUID != 0 ]; then
 fi
 
 
-systemctl stop openHAB
+systemctl stop openhab2.service
 sleep 2
 
 cp /dev/null ${OH2_DIR}/userdata/logs/openhab.log
@@ -22,5 +22,5 @@ rm -f ${OH2_DIR}/userdata/logs/events.log.[1-9]
 rm -f ${OH2_DIR}/userdata/logs/wrapper.log.[1-9]
 rm -f ${OH2_DIR}/userdata/logs/zwave.log.[1-9]
 
-systemctl start openHAB
+systemctl start openhab2.service
 

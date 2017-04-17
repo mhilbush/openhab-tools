@@ -9,4 +9,4 @@ if [ $EUID != 0 ]; then
 fi
 
 
-systemctl stop openHAB
+systemctl stop openhab2.service
