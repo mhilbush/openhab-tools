@@ -13,7 +13,7 @@ cd /opt
 HOST=`hostname`
 DATE=`date +%Y-%m-%d`
 BACKUPDIR=/mnt/tank/backup/openhab
-BACKUPFILE=openhab2-backup@${HOST}_${DATE}_00.tar.gz
+BACKUPFILE=openhab2-backup_${HOST}_${DATE}_00.tar.gz
 IDFILE=/home/mark/.ssh/id_rsa
 
 echo "Backing up to file " $BACKUPFILE
