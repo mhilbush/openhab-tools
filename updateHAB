@@ -7,13 +7,16 @@ DOWN_DIR="/opt/DOWN"
 OH2_DIR="/opt/openhab2"
 
 # Location of Karaf runtime
-KARAFBIN_DIR="${OH2_DIR}/runtime/bin"
-KARAFLIB_DIR="${OH2_DIR}/runtime/lib"
+#KARAFBIN_DIR="${OH2_DIR}/runtime/bin"
+#KARAFLIB_DIR="${OH2_DIR}/runtime/lib"
 KARAFETC_DIR="${OH2_DIR}/userdata/etc"
+
 SHELL_CFG="org.apache.karaf.shell.cfg"
 LOGGING_CFG="org.ops4j.pax.logging.cfg"
-MY_LOGGING_CFG="my-logger-definitions.cfg"
-HABPANEL_CONFIG="${OH2_DIR}/userdata/config/org/openhab/habpanel.config"
+#MY_LOGGING_CFG="my-logger-definitions.cfg"
+
+HABPANEL_CONFIG_DIR="${OH2_DIR}/userdata/config/org/openhab"
+HABPANEL_CONFIG="habpanel.config"
 
 # The location of SmartHome Designer
 SMD_DIR="/opt/ohdesign"
@@ -35,26 +38,26 @@ if [ $EUID != 0 ]; then
 	exit 1
 fi
 
-ACTIVESTATE=`systemctl --lines=0 show openHAB | fgrep ActiveState`
-if [ ${ACTIVESTATE#*=} = "active" ] ; then
+ACTIVESTATE=$(systemctl --lines=0 show openHAB | grep -F ActiveState)
+if [ "${ACTIVESTATE#*=}" = "active" ] ; then
 	echo "openHAB is running.  Please stop it before running the update."
 	exit 1
 fi
 
 
 # read the options
-TEMP=`getopt --options h --longoptions help,skip-designer -n $0 -- "$@"`
+TEMP=$(getopt --options h --longoptions help,get-designer -n "$0" -- "$@")
 eval set -- "$TEMP"
 
 # extract options and their arguments into variables.
 while true ; do
     case "$1" in
 	-h | --help)
-		echo "Usage: $0 [--skip-designer]"
+		echo "Usage: $0 [--get-designer]"
 		exit 0 
 		;;
 	--get-designer)
-		dflag=1
+		getDesigner=true
 		shift
 		;;
 	*)
@@ -73,10 +76,10 @@ if [ ! -d ${DOWN_DIR} ]; then
     exit 1
 fi
 
-cd ${DOWN_DIR}
+cd ${DOWN_DIR} || exit
 
 # Download openHAB2
-if [[ `wget -S --spider ${OH2_URL}/${OH2_FILE}  2>&1 | grep 'HTTP/1.1 200 OK'` ]]; then 
+if wget -S --spider ${OH2_URL}/${OH2_FILE}  2>&1 | grep -q 'HTTP/1.1 200 OK'; then 
 	echo "openHAB file exists on remote server.  Fetching it";
 	wget -N -q --show-progress ${OH2_URL}/${OH2_FILE}
 else
@@ -87,31 +90,39 @@ else
 fi
 
 # Download SmartHome Designer
-if [ -z ${dflag} ]; then
-	if [[ `wget -S --spider ${SMD_URL}/${SMD_FILE}  2>&1 | grep 'HTTP/1.1 200 OK'` ]]; then 
+if [ "$getDesigner" = true ]; then
+	if wget -S --spider ${SMD_URL}/${SMD_FILE}  2>&1 | grep -q 'HTTP/1.1 200 OK'; then 
 		echo "Smarthome Designer file exists on remote server.  Fetching it";
 		wget -N -q --show-progress ${SMD_URL}/${SMD_FILE}
+        unzipDesigner=true
 	else
 		echo "Smarthome Designer file does not exist on remote server!!!  Check the website for a new rev."
 		echo "Remote directory is:" ${SMD_URL}/${SMD_FILE}
 	fi
 fi
 
-# Makes a backup of the HABpanel config file
-if [ -f ${HABPANEL_CONFIG} ]; then
-    echo "Backing up HABpanel confgig file: " ${HABPANEL_CONFIG}
-    cp ${HABPANEL_CONFIG} ${DOWN_DIR}
+# Makes a backup of the HABpanel config file if one is present
+if [ -f ${HABPANEL_CONFIG_DIR}/${HABPANEL_CONFIG} ]; then
+    echo "Saving HABpanel config file:" ${HABPANEL_CONFIG}
+    cp ${HABPANEL_CONFIG_DIR}/${HABPANEL_CONFIG} ${DOWN_DIR}
+    restoreHabpanelConfig=true
 fi
 
 # These files and directories need to be deleted
-echo "Deleting old directories"
-cd ${OH2_DIR}
+echo -n "Deleting old directories: "
+cd ${OH2_DIR} || exit
+echo -n "runtime "
 rm -rf ${OH2_DIR}/runtime
+echo -n "userdata/cache "
 rm -rf ${OH2_DIR}/userdata/cache
+echo -n "userdata/tmp "
 rm -rf ${OH2_DIR}/userdata/tmp
+echo -n "userdata/config "
+rm -rf ${OH2_DIR}/userdata/config
+echo
 
 # Deletes userdata/etc/* with the excption of org.ops4j.pax.logging.cfg and org.apache.karaf.shell.cfg
-find ${KARAFETC_DIR} -type f \( -name "*" ! -name  "org.ops4j.pax.logging.cfg" ! -name "org.apache.karaf.shell.cfg" \) -exec rm -f {} +
+find ${KARAFETC_DIR} -type f \( -name "*" ! -name  ${LOGGING_CFG} ! -name ${SHELL_CFG} \) -exec rm -f {} +
 
 # Lay down the files from the new version (not overwriting files that exist)
 echo "Unzipping openHAB"
@@ -121,12 +132,14 @@ unzip -n -q ${DOWN_DIR}/${OH2_FILE}
 rm -f ${OH2_DIR}/*.bat
 
 # If we downloaded the designer, unzip it
-#if [ -z ${dflag} ]; then
-#	echo "Unzipping designer"
-#	cd ${SMD_DIR}
-#	rm -rf ${SMD_DIR}/p2/* ${SMD_DIR}/plugins 
-#	unzip -q -o ${DOWN_DIR}/${SMD_FILE}
-#fi
+if [ "${unzipDesigner}" = true ]; then
+	echo "Unzipping designer"
+	cd ${SMD_DIR} || exit
+	rm -rf ${SMD_DIR}/p2/* ${SMD_DIR}/plugins 
+	unzip -q -o ${DOWN_DIR}/${SMD_FILE}
+fi
+
+cd ${OH2_DIR} || exit
 
 # Start with empty log files
 if [ -d "${OH2_DIR}/userdata/logs" ]; then
@@ -141,27 +154,11 @@ if [ -d "${OH2_DIR}/userdata/logs" ]; then
 	cp /dev/null ${OH2_DIR}/userdata/logs/zwave.log
 fi
 
-#SERVICE_DIR=${DOWN_DIR}/service
+# Restore the HABpanel config file if one was present
+if [ "$restoreHabpanelConfig" = true ]; then
+    echo "Restoring HABpanel config file:" ${HABPANEL_CONFIG}
+	mkdir --parents ${HABPANEL_CONFIG_DIR}
+    cp ${DOWN_DIR}/${HABPANEL_CONFIG} ${HABPANEL_CONFIG_DIR}
+fi
 
-#if [ ! -d ${SERVICE_DIR} ]; then
-#	echo "Error: The directory and files are not there: " ${SERVICE_DIR}
-#	exit 1
-#fi
-
-#echo "Enabling openHAB as a service..."
-
-#if [ ! -d ${KARAFLIB_DIR}/wrapper ]; then
-#	mkdir --parents ${KARAFLIB_DIR}/wrapper
-#fi
-
-#cp -n ${SERVICE_DIR}/openHAB-wrapper        ${KARAFBIN_DIR}
-#cp -n ${SERVICE_DIR}/openHAB-service        ${KARAFBIN_DIR}
-#cp -n ${SERVICE_DIR}/openHAB.service        ${KARAFBIN_DIR}
-#cp -n ${SERVICE_DIR}/libwrapper.so          ${KARAFLIB_DIR}/wrapper/
-#cp -n ${SERVICE_DIR}/karaf-wrapper.jar      ${KARAFLIB_DIR}/wrapper/
-#cp -n ${SERVICE_DIR}/karaf-wrapper-main.jar ${KARAFLIB_DIR}/wrapper/
-#cp -n ${SERVICE_DIR}/openHAB-wrapper.conf   ${KARAFETC_DIR}/
-
-#systemctl enable ${KARAFBIN_DIR}/openHAB.service
 systemctl daemon-reload
-
