@@ -34,14 +34,14 @@ OH2_URL="https://openhab.ci.cloudbees.com/job/openHAB-Distribution/lastSuccessfu
 SMD_URL="http://download.eclipse.org/smarthome/nightly-snapshots"
 
 if [ $EUID != 0 ]; then
-	echo "Please run this as root!"
-	exit 1
+    echo "Please run this as root!"
+    exit 1
 fi
 
 ACTIVESTATE=$(systemctl --lines=0 show openHAB | grep -F ActiveState)
 if [ "${ACTIVESTATE#*=}" = "active" ] ; then
-	echo "openHAB is running.  Please stop it before running the update."
-	exit 1
+    echo "openHAB is running.  Please stop it before running the update."
+    exit 1
 fi
 
 
@@ -52,17 +52,17 @@ eval set -- "$TEMP"
 # extract options and their arguments into variables.
 while true ; do
     case "$1" in
-	-h | --help)
-		echo "Usage: $0 [--get-designer]"
-		exit 0 
-		;;
-	--get-designer)
-		getDesigner=true
-		shift
-		;;
-	*)
-		break 
-		;;
+    -h | --help)
+        echo "Usage: $0 [--get-designer]"
+        exit 0 
+        ;;
+    --get-designer)
+        getDesigner=true
+        shift
+        ;;
+    *)
+        break 
+        ;;
     esac
 done
 
@@ -80,25 +80,25 @@ cd ${DOWN_DIR} || exit
 
 # Download openHAB2
 if wget -S --spider ${OH2_URL}/${OH2_FILE}  2>&1 | grep -q 'HTTP/1.1 200 OK'; then 
-	echo "openHAB file exists on remote server.  Fetching it";
-	wget -N -q --show-progress ${OH2_URL}/${OH2_FILE}
+    echo "openHAB file exists on remote server.  Fetching it";
+    wget -N -q --show-progress ${OH2_URL}/${OH2_FILE}
 else
-	echo "Error: openHAB file does not exist on remote server!!!"
-	echo "openHAB URL is:" ${OH2_URL}/${OH2_FILE}
-	echo "Exiting now"
-	exit 1
+    echo "Error: openHAB file does not exist on remote server!!!"
+    echo "openHAB URL is:" ${OH2_URL}/${OH2_FILE}
+    echo "Exiting now"
+    exit 1
 fi
 
 # Download SmartHome Designer
 if [ "$getDesigner" = true ]; then
-	if wget -S --spider ${SMD_URL}/${SMD_FILE}  2>&1 | grep -q 'HTTP/1.1 200 OK'; then 
-		echo "Smarthome Designer file exists on remote server.  Fetching it";
-		wget -N -q --show-progress ${SMD_URL}/${SMD_FILE}
+    if wget -S --spider ${SMD_URL}/${SMD_FILE}  2>&1 | grep -q 'HTTP/1.1 200 OK'; then 
+        echo "Smarthome Designer file exists on remote server.  Fetching it";
+        wget -N -q --show-progress ${SMD_URL}/${SMD_FILE}
         unzipDesigner=true
-	else
-		echo "Smarthome Designer file does not exist on remote server!!!  Check the website for a new rev."
-		echo "Remote directory is:" ${SMD_URL}/${SMD_FILE}
-	fi
+    else
+        echo "Smarthome Designer file does not exist on remote server!!!  Check the website for a new rev."
+        echo "Remote directory is:" ${SMD_URL}/${SMD_FILE}
+    fi
 fi
 
 # Makes a backup of the HABpanel config file if one is present
@@ -108,18 +108,19 @@ if [ -f ${HABPANEL_CONFIG_DIR}/${HABPANEL_CONFIG} ]; then
     restoreHabpanelConfig=true
 fi
 
+# Back to OH2 directory
+cd ${OH2_DIR} || exit
+
 # These files and directories need to be deleted
 echo -n "Deleting old directories: "
-cd ${OH2_DIR} || exit
-echo -n "runtime "
 rm -rf ${OH2_DIR}/runtime
-echo -n "userdata/cache "
+echo -n "runtime "
 rm -rf ${OH2_DIR}/userdata/cache
-echo -n "userdata/tmp "
+echo -n "userdata/cache "
 rm -rf ${OH2_DIR}/userdata/tmp
-echo -n "userdata/config "
+echo -n "userdata/tmp "
 rm -rf ${OH2_DIR}/userdata/config
-echo
+echo "userdata/config "
 
 # Deletes userdata/etc/* with the excption of org.ops4j.pax.logging.cfg and org.apache.karaf.shell.cfg
 find ${KARAFETC_DIR} -type f \( -name "*" ! -name  ${LOGGING_CFG} ! -name ${SHELL_CFG} \) -exec rm -f {} +
@@ -131,34 +132,36 @@ unzip -n -q ${DOWN_DIR}/${OH2_FILE}
 # Clear up some windows clutter
 rm -f ${OH2_DIR}/*.bat
 
-# If we downloaded the designer, unzip it
-if [ "${unzipDesigner}" = true ]; then
-	echo "Unzipping designer"
-	cd ${SMD_DIR} || exit
-	rm -rf ${SMD_DIR}/p2/* ${SMD_DIR}/plugins 
-	unzip -q -o ${DOWN_DIR}/${SMD_FILE}
-fi
-
-cd ${OH2_DIR} || exit
-
 # Start with empty log files
 if [ -d "${OH2_DIR}/userdata/logs" ]; then
-	echo "Zapping the log files"
-	rm -f ${OH2_DIR}/userdata/logs/wrapper.log.[1-9]
-	rm -f ${OH2_DIR}/userdata/logs/openhab.log.[1-9]
-	rm -f ${OH2_DIR}/userdata/logs/events.log.[1-9]
-	rm -f ${OH2_DIR}/userdata/logs/zwave.log.[1-9]
-	cp /dev/null ${OH2_DIR}/userdata/logs/openhab.log
-	cp /dev/null ${OH2_DIR}/userdata/logs/events.log
-	cp /dev/null ${OH2_DIR}/userdata/logs/wrapper.log
-	cp /dev/null ${OH2_DIR}/userdata/logs/zwave.log
+    echo "Zapping the log files"
+    rm -f ${OH2_DIR}/userdata/logs/wrapper.log.[1-9]
+    rm -f ${OH2_DIR}/userdata/logs/openhab.log.[1-9]
+    rm -f ${OH2_DIR}/userdata/logs/events.log.[1-9]
+    rm -f ${OH2_DIR}/userdata/logs/zwave.log.[1-9]
+    cp /dev/null ${OH2_DIR}/userdata/logs/openhab.log
+    cp /dev/null ${OH2_DIR}/userdata/logs/events.log
+    cp /dev/null ${OH2_DIR}/userdata/logs/wrapper.log
+    cp /dev/null ${OH2_DIR}/userdata/logs/zwave.log
 fi
 
 # Restore the HABpanel config file if one was present
 if [ "$restoreHabpanelConfig" = true ]; then
     echo "Restoring HABpanel config file:" ${HABPANEL_CONFIG}
-	mkdir --parents ${HABPANEL_CONFIG_DIR}
+    mkdir --parents ${HABPANEL_CONFIG_DIR}
     cp ${DOWN_DIR}/${HABPANEL_CONFIG} ${HABPANEL_CONFIG_DIR}
 fi
 
+# If we downloaded the designer, unzip it
+if [ "${unzipDesigner}" = true ]; then
+    echo "Unzipping designer"
+    cd ${SMD_DIR} || exit
+    rm -rf ${SMD_DIR}/p2/* ${SMD_DIR}/plugins 
+    unzip -q -o ${DOWN_DIR}/${SMD_FILE}
+fi
+
+# Reload systemd (not sure this is necessary)
 systemctl daemon-reload
+
+# Back to OH2 directory
+cd ${OH2_DIR} || exit
