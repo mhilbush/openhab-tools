@@ -17,7 +17,7 @@ BUNDLES="list -s \
 	org.openhab.persistence.rrd4j \
 	org.openhab.action.mail"
 
-KARAF_DIR="/opt/openhab/runtime"
+KARAF_DIR="/opt/openhab2/runtime"
 
 ${KARAF_DIR}/bin/client -l 0 -- ${BUNDLES}
 
