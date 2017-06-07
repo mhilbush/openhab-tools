@@ -13,6 +13,8 @@ KARAFETC_DIR="${OH2_DIR}/userdata/etc"
 
 SHELL_CFG="org.apache.karaf.shell.cfg"
 LOGGING_CFG="org.ops4j.pax.logging.cfg"
+AUDIO_CFG="org.eclipse.smarthome.audio.cfg"
+VOICE_CFG="org.eclipse.smarthome.voice.cfg"
 #MY_LOGGING_CFG="my-logger-definitions.cfg"
 
 HABPANEL_CONFIG_DIR="${OH2_DIR}/userdata/config/org/openhab"
@@ -123,7 +125,7 @@ rm -rf ${OH2_DIR}/userdata/config
 echo "userdata/config "
 
 # Deletes userdata/etc/* with the excption of org.ops4j.pax.logging.cfg and org.apache.karaf.shell.cfg
-find ${KARAFETC_DIR} -type f \( -name "*" ! -name  ${LOGGING_CFG} ! -name ${SHELL_CFG} \) -exec rm -f {} +
+find ${KARAFETC_DIR} -type f \( -name "*" ! -name  ${LOGGING_CFG} ! -name ${SHELL_CFG} ! -name ${AUDIO_CFG} ! -name ${VOICE_CFG} \) -exec rm -f {} +
 
 # Lay down the files from the new version (not overwriting files that exist)
 echo "Unzipping openHAB"
