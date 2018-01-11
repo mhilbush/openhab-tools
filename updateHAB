@@ -24,16 +24,10 @@ HABPANEL_CONFIG="habpanel.config"
 SMD_DIR="/opt/ohdesign"
 
 # Name of OH2 snapshot file. Update this if this name changes.
-OH2_FILE="openhab-2.2.0-SNAPSHOT.zip"
-
-# Name of the Designer snapshot file. Update this if this name changes.
-SMD_FILE="eclipsesmarthome-incubation-0.9.0-SNAPSHOT-designer-linux64.zip"
+OH2_FILE="openhab-2.3.0-SNAPSHOT.zip"
 
 # URL to OH2 online nightlies
 OH2_URL="https://openhab.ci.cloudbees.com/job/openHAB-Distribution/lastSuccessfulBuild/artifact/distributions/openhab/target"
-
-# URL to designer snapshot directory
-SMD_URL="http://download.eclipse.org/smarthome/nightly-snapshots"
 
 if [ $EUID != 0 ]; then
     echo "Please run this as root!"
@@ -48,19 +42,15 @@ fi
 
 
 # read the options
-TEMP=$(getopt --options h --longoptions help,get-designer -n "$0" -- "$@")
+TEMP=$(getopt --options h --longoptions help -n "$0" -- "$@")
 eval set -- "$TEMP"
 
 # extract options and their arguments into variables.
 while true ; do
     case "$1" in
     -h | --help)
-        echo "Usage: $0 [--get-designer]"
+        echo "Usage: $0"
         exit 0 
-        ;;
-    --get-designer)
-        getDesigner=true
-        shift
         ;;
     *)
         break 
@@ -91,18 +81,6 @@ else
     exit 1
 fi
 
-# Download SmartHome Designer
-if [ "$getDesigner" = true ]; then
-    if wget -S --spider ${SMD_URL}/${SMD_FILE}  2>&1 | grep -q 'HTTP/1.1 200 OK'; then 
-        echo "Smarthome Designer file exists on remote server.  Fetching it";
-        wget -N -q --show-progress ${SMD_URL}/${SMD_FILE}
-        unzipDesigner=true
-    else
-        echo "Smarthome Designer file does not exist on remote server!!!  Check the website for a new rev."
-        echo "Remote directory is:" ${SMD_URL}/${SMD_FILE}
-    fi
-fi
-
 # Makes a backup of the HABpanel config file if one is present
 if [ -f ${HABPANEL_CONFIG_DIR}/${HABPANEL_CONFIG} ]; then
     echo "Saving HABpanel config file:" ${HABPANEL_CONFIG}
@@ -124,8 +102,8 @@ echo -n "userdata/tmp "
 rm -rf ${OH2_DIR}/userdata/config
 echo "userdata/config "
 
-# Deletes userdata/etc/* with the excption of org.ops4j.pax.logging.cfg and org.apache.karaf.shell.cfg
-find ${KARAFETC_DIR} -type f \( -name "*" ! -name  ${LOGGING_CFG} ! -name ${SHELL_CFG} ! -name ${AUDIO_CFG} ! -name ${VOICE_CFG} \) -exec rm -f {} +
+# Deletes userdata/etc/* with the exception of org.ops4j.pax.logging.cfg
+find ${KARAFETC_DIR} -type f \( -name "*" ! -name  ${LOGGING_CFG} \) -exec rm -f {} +
 
 # Lay down the files from the new version (not overwriting files that exist)
 echo "Unzipping openHAB"
@@ -154,16 +132,9 @@ if [ "$restoreHabpanelConfig" = true ]; then
     cp ${DOWN_DIR}/${HABPANEL_CONFIG} ${HABPANEL_CONFIG_DIR}
 fi
 
-# If we downloaded the designer, unzip it
-if [ "${unzipDesigner}" = true ]; then
-    echo "Unzipping designer"
-    cd ${SMD_DIR} || exit
-    rm -rf ${SMD_DIR}/p2/* ${SMD_DIR}/plugins 
-    unzip -q -o ${DOWN_DIR}/${SMD_FILE}
-fi
-
 # Reload systemd (not sure this is necessary)
 systemctl daemon-reload
 
 # Back to OH2 directory
 cd ${OH2_DIR} || exit
+
