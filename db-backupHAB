@@ -1,0 +1,29 @@
+#! /bin/bash
+
+HOST=`hostname`
+DATE=`date +%Y-%m-%d`
+BACKUPFILE=openhab-db-backup_${HOST}_${DATE}
+COMPRESSEDBACKUPFILE=${BACKUPFILE}.tar.gz
+
+NASIDFILE=/home/mark/.ssh/id_rsa
+NASBACKUPDIR=/mnt/tank/backup/openhab
+
+if [ $EUID != 0 ]; then
+        echo "Please run this as root!"
+        exit 1
+fi
+
+cd /opt
+
+echo "Dumping database to ${BACKUPFILE}"
+mysqldump --user=openhab --password=openhab openhab > ${BACKUPFILE}
+
+echo "Compressing database backup file"
+tar czf ${COMPRESSEDBACKUPFILE}.tar.gz ${BACKUPFILE}
+
+echo "Copying database backup to NAS..."
+scp -i ${NASIDFILE} ${COMPRESSEDBACKUPFILE} mark@nas.nj.hilbush.com:${NASBACKUPDIR}/${HOST}/${COMPRESSEDBACKUPFILE}
+
+rm -f ${BACKUPFILE}
+echo "Done"
+
