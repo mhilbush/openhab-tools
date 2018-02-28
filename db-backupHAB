@@ -16,7 +16,7 @@ fi
 cd /opt
 
 echo "Dumping database to ${BACKUPFILE}"
-mysqldump --user=openhab --password=openhab openhab > ${BACKUPFILE}
+mysqldump --user=openhab --password=openhab --databases openhab > ${BACKUPFILE}
 
 echo "Compressing database backup file"
 tar czf ${COMPRESSEDBACKUPFILE} ${BACKUPFILE}
