@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# Name of OH2 snapshot file. Update this if this name changes.
+OH2_FILE="openhab-2.3.0-SNAPSHOT.zip"
+
 # The location for downloads
 DOWN_DIR="/opt/DOWN"
 
@@ -18,12 +21,6 @@ VOICE_CFG="org.eclipse.smarthome.voice.cfg"
 
 HABPANEL_CONFIG_DIR="${OH2_DIR}/userdata/config/org/openhab"
 HABPANEL_CONFIG="habpanel.config"
-
-# The location of SmartHome Designer
-SMD_DIR="/opt/ohdesign"
-
-# Name of OH2 snapshot file. Update this if this name changes.
-OH2_FILE="openhab-2.3.0-SNAPSHOT.zip"
 
 # URL to OH2 online nightlies
 OH2_URL="https://openhab.ci.cloudbees.com/job/openHAB-Distribution/lastSuccessfulBuild/artifact/distributions/openhab/target"

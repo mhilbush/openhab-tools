@@ -1,0 +1,32 @@
+#!/bin/bash
+
+if [ $# -eq 0 ] ; then
+    echo "Usage: reinit node-number"
+    exit 1
+fi
+
+NODENUMBER=${1}
+
+HOST=`hostname -A`
+HOST="$(echo -e "${HOST}" | tr -d '[:space:]')"
+
+echo "Reinitializing Z-Wave node" ${NODENUMBER} "on host <${HOST}>"
+
+PAYLOAD='{"action_reinit":true}'
+
+URLPART1="http://"
+URLPART2=":8080/rest/things/zwave:device:zstick:node"
+URLPART3="/config"
+
+URL=${URLPART1}${HOST}${URLPART2}${NODENUMBER}${URLPART3}
+
+//echo "Rest URL is" ${URL}
+
+TMPFILE=$(mktemp /tmp/abc-script.XXXXXX)
+
+curl --output ${TMPFILE} -X PUT -H "Content-type: application/json" -d '{"action_reinit":true}' ${URL}
+
+#rm -f ${TMPFILE}
+
+echo; echo
+
