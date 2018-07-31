@@ -1,21 +1,14 @@
 #!/bin/bash
 
 BUNDLES="list -s \
-	org.apache.karaf.shell.core \
-	org.apache.karaf.wrapper.core \
-	org.eclipse.smarthome.core \
-	org.openhab.binding.astro \
-	org.openhab.binding.globalcache \
-	org.openhab.binding.http \
-	org.eclipse.smarthome.binding.ntp \
+	org.openhab.binding.zwave \
 	org.openhab.binding.squeezebox \
+	org.openhab.binding.globalcache \
+	org.openhab.binding.bigassfan \
 	org.openhab.binding.sunsetwx \
 	org.openhab.binding.systeminfo \
-	org.openhab.binding.weather \
-	org.openhab.binding.zwave \
-	org.openhab.persistence.mysql \
-	org.openhab.persistence.rrd4j \
-	org.openhab.action.mail"
+	org.openhab.binding.weatherunderground \
+	org.eclipse.smarthome.core
 
 KARAF_DIR="/opt/openhab2/runtime"
 
