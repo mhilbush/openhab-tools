@@ -19,5 +19,5 @@ BUNDLES="list -s \
 
 KARAF_DIR="/opt/openhab2/runtime"
 
-${KARAF_DIR}/bin/client -l 0 -- ${BUNDLES}
+${KARAF_DIR}/bin/client -p habopen -l 0 -- ${BUNDLES}
 
