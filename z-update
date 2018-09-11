@@ -1,0 +1,27 @@
+#!/bin/bash
+
+KARAF_DIR="/opt/openhab2/runtime"
+
+VERSION=`grep "openhab-distro" /opt/openhab2/userdata/etc/version.properties | sed -e 's/openhab-distro *: *//' -e 's/\.[0-9]-SNAPSHOT//'`
+
+BINDING="org.openhab.binding.zwave"
+LIST="list -s ${BINDING}"
+UPDATE="bundle:update org.openhab.binding.zwave https://openhab.jfrog.io/openhab/online-repo-snapshot/${VERSION}/org/openhab/binding/org.openhab.binding.zwave/${VERSION}.0-SNAPSHOT/org.openhab.binding.zwave-${VERSION}.0-SNAPSHOT.jar"
+
+#echo ${VERSION}
+#echo ${LIST}
+#echo ${UPDATE}
+
+echo
+echo -n "Current version: "
+${KARAF_DIR}/bin/client -p habopen -l 0 -- ${LIST} | grep "zwave"
+
+echo
+echo -n "Updating binding..."
+${KARAF_DIR}/bin/client -p habopen -l 0 -- ${UPDATE} 2>&1 > /dev/null
+echo
+
+echo
+echo -n "Updated version: "
+${KARAF_DIR}/bin/client -p habopen -l 0 -- ${LIST} | grep "zwave"
+

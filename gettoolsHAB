@@ -3,7 +3,7 @@
 HAB_PARENT_DIR="/opt"
 
 FILE_LIST="updateHAB backupHAB startHAB stopHAB restartHAB \
-            versionHAB upgradeZWAVE db-backupHAB reinit"
+            versionHAB upgradeZWAVE db-backupHAB reinit z-threads z-update"
 
 cd ${HAB_PARENT_DIR}
 
