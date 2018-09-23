@@ -8,7 +8,8 @@ BUNDLES="list -s \
 	org.openhab.binding.sunsetwx \
 	org.openhab.binding.systeminfo \
 	org.openhab.binding.weatherunderground \
-	org.eclipse.smarthome.core"
+	org.eclipse.smarthome.core \
+        org.openhab.core.karaf"
 
 KARAF_DIR="/opt/openhab2/runtime"
 
