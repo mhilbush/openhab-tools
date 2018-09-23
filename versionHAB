@@ -9,7 +9,8 @@ BUNDLES="list -s \
 	org.openhab.binding.systeminfo \
 	org.openhab.binding.weatherunderground \
 	org.eclipse.smarthome.core \
-        org.openhab.core.karaf"
+        org.openhab.core.karaf \
+        org.apache.karaf.event"
 
 KARAF_DIR="/opt/openhab2/runtime"
 
