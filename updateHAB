@@ -109,19 +109,19 @@ unzip -n -q ${DOWN_DIR}/${OH2_FILE}
 rm -f ${OH2_DIR}/*.bat
 
 # Start with empty log files
-if [ -d "${OH2_DIR}/userdata/logs" ]; then
-    echo "Zapping the log files"
-    rm -f ${OH2_DIR}/userdata/logs/wrapper.log.[1-9]
-    rm -f ${OH2_DIR}/userdata/logs/openhab.log.[1-9]
-    rm -f ${OH2_DIR}/userdata/logs/events.log.[1-9]
-    rm -f ${OH2_DIR}/userdata/logs/zwave.log.[1-9]
-    rm -f ${OH2_DIR}/userdata/logs/audit.log.[1-9]
-    cp /dev/null ${OH2_DIR}/userdata/logs/openhab.log
-    cp /dev/null ${OH2_DIR}/userdata/logs/events.log
-    cp /dev/null ${OH2_DIR}/userdata/logs/wrapper.log
-    cp /dev/null ${OH2_DIR}/userdata/logs/zwave.log
-    cp /dev/null ${OH2_DIR}/userdata/logs/audit.log
-fi
+#if [ -d "${OH2_DIR}/userdata/logs" ]; then
+#    echo "Zapping the log files"
+#    rm -f ${OH2_DIR}/userdata/logs/wrapper.log.[1-9]
+#    rm -f ${OH2_DIR}/userdata/logs/openhab.log.[1-9]
+#    rm -f ${OH2_DIR}/userdata/logs/events.log.[1-9]
+#    rm -f ${OH2_DIR}/userdata/logs/zwave.log.[1-9]
+#    rm -f ${OH2_DIR}/userdata/logs/audit.log.[1-9]
+#    cp /dev/null ${OH2_DIR}/userdata/logs/openhab.log
+#    cp /dev/null ${OH2_DIR}/userdata/logs/events.log
+#    cp /dev/null ${OH2_DIR}/userdata/logs/wrapper.log
+#    cp /dev/null ${OH2_DIR}/userdata/logs/zwave.log
+#    cp /dev/null ${OH2_DIR}/userdata/logs/audit.log
+#fi
 
 # Restore the HABpanel config file if one was present
 if [ "$restoreHabpanelConfig" = true ]; then
