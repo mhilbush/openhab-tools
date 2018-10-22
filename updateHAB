@@ -23,7 +23,7 @@ HABPANEL_CONFIG_DIR="${OH2_DIR}/userdata/config/org/openhab"
 HABPANEL_CONFIG="habpanel.config"
 
 # URL to OH2 online nightlies
-OH2_URL="https://openhab.ci.cloudbees.com/job/openHAB-Distribution/lastSuccessfulBuild/artifact/distributions/openhab/target"
+OH2_URL="https://ci.openhab.org/job/openHAB-Distribution/lastSuccessfulBuild/artifact/distributions/openhab/target"
 
 if [ $EUID != 0 ]; then
     echo "Please run this as root!"
