@@ -21,6 +21,8 @@ mysqldump --user=openhab --password=openhab --databases openhab > ${BACKUPFILE}
 echo "Compressing database backup file"
 tar czf ${COMPRESSEDBACKUPFILE} ${BACKUPFILE}
 
+chown mark:mark ${COMPRESSEDBACKUPFILE}
+
 echo "Copying database backup to NAS..."
 scp -i ${NASIDFILE} ${COMPRESSEDBACKUPFILE} mark@nas.nj.hilbush.com:${NASBACKUPDIR}/${HOST}/${COMPRESSEDBACKUPFILE}
 
