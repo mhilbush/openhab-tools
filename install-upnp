@@ -1,0 +1,16 @@
+#!/bin/bash
+
+KARAF_DIR="/opt/openhab2/runtime"
+
+VERSION=`grep "openhab-distro" /opt/openhab2/userdata/etc/version.properties | sed -e 's/openhab-distro *: *//' -e 's/\.[0-9]-SNAPSHOT//'`
+
+FEATURE="feature:install openhab-transport-upnp"
+LIST="list -s | grep upnp
+
+#echo ${VERSION}
+
+echo
+echo -n "Adding upnp feature..."
+${KARAF_DIR}/bin/client -p habopen -l 0 -- ${FEATURE} 2>&1 > /dev/null
+echo
+
