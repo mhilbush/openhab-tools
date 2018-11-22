@@ -1,0 +1,12 @@
+#!/bin/bash
+
+OH_PS=`ps ax | grep -e '[j]ava *.*openhab'`
+
+#echo ${OH_PS}
+
+OH_PID=`echo ${OH_PS} | awk '{ print $1 }'`
+
+echo "PID: " ${OH_PID}
+
+pidstat -u -p ${OH_PID} 2
+

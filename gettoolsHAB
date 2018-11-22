@@ -3,7 +3,8 @@
 HAB_PARENT_DIR="/opt"
 
 FILE_LIST="updateHAB backupHAB startHAB stopHAB restartHAB versionHAB \
-            upgradeZWAVE db-backupHAB reinit z-threads z-update install-upnp"
+            upgradeZWAVE db-backupHAB reinit z-threads z-update install-upnp \
+            oh-cpu oh-memory"
 
 cd ${HAB_PARENT_DIR}
 
