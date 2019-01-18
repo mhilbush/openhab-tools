@@ -4,7 +4,7 @@ KARAF_DIR="/opt/openhab2/runtime"
 
 VERSION=`grep "openhab-distro" /opt/openhab2/userdata/etc/version.properties | sed -e 's/openhab-distro *: *//' -e 's/\.[0-9]-SNAPSHOT//'`
 
-FEATURE="feature:install openhab-transport-upnp"
+FEATURE="feature:install openhab-runtime-jna"
 LIST="list -s | grep upnp"
 
 #echo ${VERSION}
