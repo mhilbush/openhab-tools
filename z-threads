@@ -2,5 +2,6 @@
 
 KARAF_DIR="/opt/openhab2/runtime"
 
-${KARAF_DIR}/bin/client -p habopen -l 0 -- threads | grep -e '^".*" Id=[0-9][0-9]* in ' | grep zwave
+#${KARAF_DIR}/bin/client -p habopen -l 0 -- threads | grep -e '^".*" Id=[0-9][0-9]* in ' | grep zwave
+${KARAF_DIR}/bin/client -p habopen -l 0 -- threads | grep -e '^"ZWave' | sort
 
