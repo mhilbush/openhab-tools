@@ -2,22 +2,22 @@
 
 HAB_PARENT_DIR="/opt"
 
-FILE_LIST=  "updateHAB \
-            backupHAB \
-            startHAB \
-            stopHAB \
-            restartHAB \
-            versionHAB \
-            upgradeZWAVE \
-            db-backupHAB \
-            reinit \
-            z-threads \
-            z-update \
-            install-upnp \
-            install-jna \
-            oh-cpu \
-            oh-memory \
-            top-threads-cpu"
+FILE_LIST=  "updateHAB" \
+            "backupHAB" \
+            "startHAB" \
+            "stopHAB" \
+            "restartHAB" \
+            "versionHAB" \
+            "upgradeZWAVE" \
+            "db-backupHAB" \
+            "reinit" \
+            "z-threads" \
+            "z-update" \
+            "install-upnp" \
+            "install-jna" \
+            "oh-cpu" \
+            "oh-memory" \
+            "top-threads-cpu"
 
 cd ${HAB_PARENT_DIR}
 
