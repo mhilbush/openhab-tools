@@ -8,5 +8,6 @@ OH_PID=`echo ${OH_PS} | awk '{ print $1 }'`
 
 echo "PID: " ${OH_PID}
 
+echo pidstat -u -p ${OH_PID} 2
 pidstat -u -p ${OH_PID} 2
 

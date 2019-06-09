@@ -1,0 +1,45 @@
+#!/bin/bash
+
+SEPARATOR="-----------------------"
+
+if [ $1 = "--help" ]; then
+    echo "Usage: top-threads-cpu [nthreads | all | pattern]"
+    exit 0
+fi
+
+if [ $# -eq 0 ] ; then
+    numthreads="10"
+elif [ $1 = "all" ]; then
+    numthreads="1000"
+elif [[ "$1" =~ ^[0-9]+$ ]]; then
+    numthreads=$1
+else
+    pattern=$1
+    separator=${SEPARATOR}
+fi
+
+if [ "$numthreads" != "1" ]; then
+    separator=${SEPARATOR}
+fi
+
+while true; do
+    if [ -z ${pattern+x} ]; then
+        /opt/openhab2/runtime/bin/client -p habopen -l 0 -- threads --list | \
+            awk -F"│" '{ gsub(/[ \t]+$/, "", $2);  print $4 $2 }' | \
+            sort --numeric-sort --reverse | \
+            head --lines ${numthreads} ;
+
+        if [ ! -z ${separator+x} ]; then
+            echo $separator
+        fi
+    else
+        /opt/openhab2/runtime/bin/client -p habopen -l 0 -- threads --list | \
+            awk -F"│" '{ gsub(/[ \t]+$/, "", $2);  print $4 $2 }' | \
+            grep --line-buffered ${pattern}
+
+        if [ ! -z ${separator+x} ]; then
+            echo $separator
+        fi
+    fi
+done
+
