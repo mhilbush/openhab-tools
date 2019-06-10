@@ -5,7 +5,7 @@ SEPARATOR="-----------------------"
 interval=10
 onetime=false
 
-if ! options=$(getopt -u -o hi:o -l help,interval:,one-time -- "$@")
+if ! options=$(getopt -u -o hi:os -l help,interval:,one-time,no-separator -- "$@")
 then
     echo "Badly formed options"
     exit 1
@@ -22,6 +22,11 @@ do
         ;;
     -o | --one-time)
         onetime=true
+        shift
+        ;;
+    -s | --no-separator)
+        echo "No separator"
+        noseparator=true
         shift
         ;;
     -h | --help)
@@ -51,6 +56,10 @@ fi
 
 if [ "$numthreads" != "1" ]; then
     separator=${SEPARATOR}
+fi
+
+if [ "$noseparator" = true ]; then
+    unset separator
 fi
 
 while true; do
