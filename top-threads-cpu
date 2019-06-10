@@ -25,21 +25,18 @@ fi
 while true; do
     if [ -z ${pattern+x} ]; then
         /opt/openhab2/runtime/bin/client -p habopen -l 0 -- threads --list | \
-            awk -F"│" '{ gsub(/[ \t]+$/, "", $2);  print $4 $2 }' | \
+            awk -F"│" '{ gsub(/[ \t]+$/, "", $2); print $4 $2 }' | \
             sort --numeric-sort --reverse | \
             head --lines ${numthreads} ;
-
-        if [ ! -z ${separator+x} ]; then
-            echo $separator
-        fi
     else
         /opt/openhab2/runtime/bin/client -p habopen -l 0 -- threads --list | \
-            awk -F"│" '{ gsub(/[ \t]+$/, "", $2);  print $4 $2 }' | \
+            awk -F"│" '{ gsub(/[ \t]+$/, "", $2); print $4 $2 }' | \
             grep --line-buffered ${pattern}
-
-        if [ ! -z ${separator+x} ]; then
-            echo $separator
-        fi
     fi
+
+    if [ ! -z ${separator+x} ]; then
+        echo $separator
+    fi
+    sleep 10
 done
 
