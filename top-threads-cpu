@@ -2,10 +2,37 @@
 
 SEPARATOR="-----------------------"
 
-if [ $1 = "--help" ]; then
-    echo "Usage: top-threads-cpu [nthreads | all | pattern]"
-    exit 0
+interval=10
+
+if ! options=$(getopt -u -o hi: -l help,interval: -- "$@")
+then
+    echo "Badly formed options"
+    exit 1
 fi
+
+set -- $options
+
+while [ $# -gt 0 ]
+do
+    case $1 in
+    -i | --interval)
+        echo "Interval $2"
+        interval=$2
+        shift; shift
+        ;;
+    -h | --help)
+        echo "Usage: top-threads-cpu [nthreads | all | pattern]"
+        exit 0
+        ;;
+    -- )
+        shift; 
+        break
+        ;;
+    (*) break
+        ;;
+    esac
+    shift
+done
 
 if [ $# -eq 0 ] ; then
     numthreads="10"
@@ -37,6 +64,6 @@ while true; do
     if [ ! -z ${separator+x} ]; then
         echo $separator
     fi
-    sleep 10
+    sleep ${interval}
 done
 
