@@ -3,8 +3,9 @@
 SEPARATOR="-----------------------"
 
 interval=10
+onetime=false
 
-if ! options=$(getopt -u -o hi: -l help,interval: -- "$@")
+if ! options=$(getopt -u -o hi:o -l help,interval:,one-time -- "$@")
 then
     echo "Badly formed options"
     exit 1
@@ -16,12 +17,15 @@ while [ $# -gt 0 ]
 do
     case $1 in
     -i | --interval)
-        echo "Interval $2"
         interval=$2
         shift; shift
         ;;
+    -o | --one-time)
+        onetime=true
+        shift
+        ;;
     -h | --help)
-        echo "Usage: top-threads-cpu [nthreads | all | pattern]"
+        echo "Usage: top-threads-cpu [-o] [-i interval] [nthreads | all | pattern]"
         exit 0
         ;;
     -- )
@@ -59,6 +63,10 @@ while true; do
         /opt/openhab2/runtime/bin/client -p habopen -l 0 -- threads --list | \
             awk -F"│" '{ gsub(/[ \t]+$/, "", $2); print $4 $2 }' | \
             grep --line-buffered ${pattern}
+    fi
+    
+    if [ ${onetime} = true ]; then
+        break
     fi
 
     if [ ! -z ${separator+x} ]; then
