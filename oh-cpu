@@ -1,13 +1,42 @@
 #!/bin/bash
 
-OH_PS=`ps ax | grep -e '[j]ava *.*openhab'`
+interval=2
 
-#echo ${OH_PS}
+if ! options=$(getopt -u -o hi:n:os -l help,interval:,one-time,num-threads:,no-separator -- "$@")
+then
+    echo "Badly formed options"
+    exit 1
+fi
+
+set -- $options
+
+while [ $# -gt 0 ]
+do
+    case $1 in
+    -i | --interval)
+        interval=$2
+        shift 2
+        ;;
+    -h | --help)
+        echo "Usage: oh-cpu [-i|--interval n]"
+        exit 0
+        ;;
+    -- )
+        shift; 
+        break
+        ;;
+    (*) break
+        ;;
+    esac
+done
+
+OH_PS=`ps ax | grep -e '[j]ava *.*openhab'`
+#echo PS=${OH_PS}
+if [ ! -z ${OH_PS} ]; then
+    echo "Can't find openHAB process id"
+    exit 1
+fi
 
 OH_PID=`echo ${OH_PS} | awk '{ print $1 }'`
-
-echo "PID: " ${OH_PID}
-
-echo pidstat -u -p ${OH_PID} 2
-pidstat -u -p ${OH_PID} 2
-
+#echo "PID: " ${OH_PID}
+pidstat -u -p ${OH_PID} ${interval}
