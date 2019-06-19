@@ -2,7 +2,7 @@
 
 interval=2
 
-if ! options=$(getopt -u -o hi:n:os -l help,interval:,one-time,num-threads:,no-separator -- "$@")
+if ! options=$(getopt -u -o hi: -l help,interval: -- "$@")
 then
     echo "Badly formed options"
     exit 1
