@@ -3,9 +3,9 @@
 SEPARATOR="-----------------------"
 
 interval=10
-onetime=false
+onetime=true
 noseparator=false
-numthreads=10
+numthreads=all
 
 if ! options=$(getopt -u -o hi:n:os -l help,interval:,one-time,num-threads:,no-separator -- "$@")
 then
@@ -15,33 +15,29 @@ fi
 
 set -- $options
 
-echo "Num args: $#"
-
 while [ $# -gt 0 ]
 do
     case $1 in
     -i | --interval)
-        echo "interval: $2"
         interval=$2
+        onetime=false
         shift 2
         ;;
     -n | --num-threads)
-        echo "numthreads: $2"
         numthreads=$2
         shift 2
         ;;
     -o | --one-time)
-        echo "onetime: true"
         onetime=true
+        noseparator=true
         shift
         ;;
     -s | --no-separator)
-        echo "No separator"
         noseparator=true
         shift
         ;;
     -h | --help)
-        echo "Usage: top-threads-cpu [-o] [-i interval] [nthreads | all | pattern]"
+        echo "Usage: top-threads-cpu [-s] [-o] [-i|--interval n] [-n|--num-threads n] [pattern]"
         exit 0
         ;;
     -- )
@@ -55,7 +51,6 @@ done
 
 if [ $# != 0 ]; then
     pattern=$1
-    echo "pattern: $pattern"
     separator=${SEPARATOR}
 fi
 
@@ -69,10 +64,18 @@ fi
 
 while true; do
     if [ -z ${pattern+x} ]; then
-        /opt/openhab2/runtime/bin/client -p habopen -l 0 -- threads --list | \
-            awk -F"│" '{ gsub(/[ \t]+$/, "", $2); print $4 $2 }' | \
-            sort --numeric-sort --reverse | \
-            head --lines ${numthreads} ;
+        if [ "$numthreads" = "all" ]; then
+            /opt/openhab2/runtime/bin/client -p habopen -l 0 -- threads --list | \
+                awk -F"│" '{ gsub(/[ \t]+$/, "", $2); print $4 $2 }' | \
+                sed -e '/CPU time  Name/d' | \
+                sort --numeric-sort --reverse
+        else
+            /opt/openhab2/runtime/bin/client -p habopen -l 0 -- threads --list | \
+                awk -F"│" '{ gsub(/[ \t]+$/, "", $2); print $4 $2 }' | \
+                sed -e '/CPU time  Name/d' | \
+                sort --numeric-sort --reverse | \
+                head --lines ${numthreads} ;
+        fi
     else
         /opt/openhab2/runtime/bin/client -p habopen -l 0 -- threads --list | \
             awk -F"│" '{ gsub(/[ \t]+$/, "", $2); print $4 $2 }' | \
