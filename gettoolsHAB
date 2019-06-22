@@ -19,6 +19,7 @@ install-jna
 oh-cpu 
 oh-memory 
 top-threads-cpu
+event-rate
 '
 
 cd ${HAB_PARENT_DIR}
