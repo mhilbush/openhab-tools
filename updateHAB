@@ -25,8 +25,9 @@ HABPANEL_CONFIG="habpanel.config"
 # URL to OH2 online nightlies
 OH2_URL="https://ci.openhab.org/job/openHAB-Distribution/lastSuccessfulBuild/artifact/distributions/openhab/target"
 
-if [ $EUID != 0 ]; then
-    echo "Please run this as root!"
+OH_USER=`stat -c '%u' /opt/openhab2/userdata/logs/openhab.log`
+if [ $EUID != ${OH_USER} ]; then
+    echo "Please run this as the user who started openHAB!"
     exit 1
 fi
 
