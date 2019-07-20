@@ -30,4 +30,4 @@ tar czf ${BACKUPFILE} ${HAB}
 chown mark:mark ${BACKUPFILE}
 
 echo "Copying backup to NAS..."
-scp -i ${IDFILE} ${BACKUPFILE} mark@nas.nj.hilbush.com:${BACKUPDIR}/${HOST}/${BACKUPFILE}
+scp -i ${IDFILE} ${BACKUPFILE} mark@nas.md.hilbush.com:${BACKUPDIR}/${HOST}/${BACKUPFILE}

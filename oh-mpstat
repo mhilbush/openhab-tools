@@ -1,0 +1,35 @@
+#!/bin/bash
+
+interval=2
+
+if ! options=$(getopt -u -o hi: -l help,interval: -- "$@")
+then
+    echo "Badly formed options"
+    exit 1
+fi
+
+set -- $options
+
+while [ $# -gt 0 ]
+do
+    case $1 in
+    -i | --interval)
+        interval=$2
+        shift 2
+        ;;
+    -h | --help)
+        echo "Usage: oh-mpstat [-i|--interval n]"
+        exit 0
+        ;;
+    -- )
+        shift; 
+        break
+        ;;
+    (*) break
+        ;;
+    esac
+done
+
+OH_PID=`echo ${OH_PS} | awk '{ print $1 }'`
+#echo "PID: " ${OH_PID}
+mpstat -P ALL ${interval}

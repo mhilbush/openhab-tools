@@ -20,6 +20,7 @@ oh-cpu
 oh-memory 
 top-threads-cpu
 event-rate
+oh-mpstat
 '
 
 cd ${HAB_PARENT_DIR}
