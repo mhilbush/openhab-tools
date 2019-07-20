@@ -1,0 +1,3 @@
+#!/bin/bash
+
+tail -n 0 -f /opt/openhab2/userdata/logs/events.log | pv --line-mode --average-rate > /dev/null
