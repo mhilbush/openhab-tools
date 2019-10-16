@@ -6,7 +6,7 @@ VERSION=`grep "openhab-distro" /opt/openhab2/userdata/etc/version.properties | s
 
 BINDING="org.openhab.binding.zwave"
 LIST="list -s ${BINDING}"
-UPDATE="bundle:update org.openhab.binding.zwave https://openhab.jfrog.io/openhab/online-repo-snapshot/${VERSION}/org/openhab/binding/org.openhab.binding.zwave/${VERSION}.0-SNAPSHOT/org.openhab.binding.zwave-${VERSION}.0-SNAPSHOT.jar"
+UPDATE="bundle:update org.openhab.binding.zwave https://ci.openhab.org/job/openHAB2-Bundles/lastSuccessfulBuild/artifact/bindings/org.openhab.binding.zwave/target/org.openhab.binding.zwave-2.5.0-SNAPSHOT.jar"
 
 #echo ${VERSION}
 #echo ${LIST}
