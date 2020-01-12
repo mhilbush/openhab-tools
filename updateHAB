@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Name of OH2 snapshot file. Update this if this name changes.
-OH2_FILE="openhab-2.5.0-SNAPSHOT.zip"
+OH2_FILE="openhab-2.5.2-SNAPSHOT.zip"
 
 # The location for downloads
 DOWN_DIR="/opt/DOWN"
@@ -23,7 +23,7 @@ HABPANEL_CONFIG_DIR="${OH2_DIR}/userdata/config/org/openhab"
 HABPANEL_CONFIG="habpanel.config"
 
 # URL to OH2 online nightlies
-OH2_URL="https://ci.openhab.org/job/openHAB-Distribution/lastSuccessfulBuild/artifact/distributions/openhab/target"
+OH2_URL="https://ci.openhab.org/job/openHAB2.5.x-Distribution/lastSuccessfulBuild/artifact/distributions/openhab/target/"
 
 OH_USER=`stat -c '%u' /opt/openhab2/userdata/logs/openhab.log`
 if [ $EUID != ${OH_USER} ]; then
