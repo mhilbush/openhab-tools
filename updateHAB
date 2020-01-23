@@ -3,6 +3,9 @@
 # Name of OH2 snapshot file. Update this if this name changes.
 OH2_FILE="openhab-2.5.2-SNAPSHOT.zip"
 
+# URL to OH2 online nightlies
+OH2_URL="https://ci.openhab.org/view/Integration%20Builds%20(2.5.x)/job/openHAB-Distribution/lastSuccessfulBuild/artifact/distributions/openhab/target/"
+
 # The location for downloads
 DOWN_DIR="/opt/DOWN"
 
@@ -21,9 +24,6 @@ VOICE_CFG="org.eclipse.smarthome.voice.cfg"
 
 HABPANEL_CONFIG_DIR="${OH2_DIR}/userdata/config/org/openhab"
 HABPANEL_CONFIG="habpanel.config"
-
-# URL to OH2 online nightlies
-OH2_URL="https://ci.openhab.org/view/Integration%20Builds%20(2.5.x)/job/openHAB-Distribution/lastSuccessfulBuild/artifact/distributions/openhab/target/"
 
 OH_USER=`stat -c '%u' /opt/openhab2/userdata/logs/openhab.log`
 if [ $EUID != ${OH_USER} ]; then
@@ -47,10 +47,10 @@ while true ; do
     case "$1" in
     -h | --help)
         echo "Usage: $0"
-        exit 0 
+        exit 0
         ;;
     *)
-        break 
+        break
         ;;
     esac
 done
@@ -68,7 +68,7 @@ fi
 cd ${DOWN_DIR} || exit
 
 # Download openHAB2
-if wget -S --spider ${OH2_URL}/${OH2_FILE}  2>&1 | grep -q 'HTTP/1.1 200 OK'; then 
+if wget -S --spider ${OH2_URL}/${OH2_FILE}  2>&1 | grep -q 'HTTP/1.1 200 OK'; then
     echo "openHAB file exists on remote server.  Fetching it";
     wget -N -q --show-progress ${OH2_URL}/${OH2_FILE}
 else
@@ -79,11 +79,11 @@ else
 fi
 
 # Makes a backup of the HABpanel config file if one is present
-if [ -f ${HABPANEL_CONFIG_DIR}/${HABPANEL_CONFIG} ]; then
-    echo "Saving HABpanel config file:" ${HABPANEL_CONFIG}
-    cp ${HABPANEL_CONFIG_DIR}/${HABPANEL_CONFIG} ${DOWN_DIR}
-    restoreHabpanelConfig=true
-fi
+#if [ -f ${HABPANEL_CONFIG_DIR}/${HABPANEL_CONFIG} ]; then
+#    echo "Saving HABpanel config file:" ${HABPANEL_CONFIG}
+#    cp ${HABPANEL_CONFIG_DIR}/${HABPANEL_CONFIG} ${DOWN_DIR}
+#    restoreHabpanelConfig=true
+#fi
 
 # Back to OH2 directory
 cd ${OH2_DIR} || exit
@@ -96,8 +96,8 @@ rm -rf ${OH2_DIR}/userdata/cache
 echo -n "userdata/cache "
 rm -rf ${OH2_DIR}/userdata/tmp
 echo -n "userdata/tmp "
-rm -rf ${OH2_DIR}/userdata/config
-echo "userdata/config "
+#rm -rf ${OH2_DIR}/userdata/config
+#echo "userdata/config "
 
 # Deletes userdata/etc/* with the exception of org.ops4j.pax.logging.cfg
 find ${KARAFETC_DIR} -type f \( -name "*" ! -name  ${LOGGING_CFG} \) -exec rm -f {} +
@@ -125,15 +125,14 @@ rm -f ${OH2_DIR}/*.bat
 #fi
 
 # Restore the HABpanel config file if one was present
-if [ "$restoreHabpanelConfig" = true ]; then
-    echo "Restoring HABpanel config file:" ${HABPANEL_CONFIG}
-    mkdir --parents ${HABPANEL_CONFIG_DIR}
-    cp ${DOWN_DIR}/${HABPANEL_CONFIG} ${HABPANEL_CONFIG_DIR}
-fi
+#if [ "$restoreHabpanelConfig" = true ]; then
+#    echo "Restoring HABpanel config file:" ${HABPANEL_CONFIG}
+#    mkdir --parents ${HABPANEL_CONFIG_DIR}
+#    cp ${DOWN_DIR}/${HABPANEL_CONFIG} ${HABPANEL_CONFIG_DIR}
+#fi
 
 # Reload systemd (not sure this is necessary)
 systemctl daemon-reload
 
 # Back to OH2 directory
 cd ${OH2_DIR} || exit
-
