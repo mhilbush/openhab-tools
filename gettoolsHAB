@@ -1,26 +1,27 @@
 #!/bin/bash
 
-HAB_PARENT_DIR="/opt"
+HAB_PARENT_DIR="/opt/bin"
 
 FILE_LIST='
-updateHAB 
 backupHAB 
-startHAB 
-stopHAB 
-restartHAB 
-versionHAB 
-upgradeZWAVE 
+clear-creds
 db-backupHAB 
-reinit 
-z-threads 
-z-update 
+event-rate
 install-upnp 
 install-jna 
 oh-cpu 
 oh-memory 
-top-threads-cpu
-event-rate
 oh-mpstat
+reinit 
+restartHAB 
+startHAB 
+stopHAB 
+top-threads-cpu
+updateHAB 
+upgradeZWAVE 
+versionHAB 
+z-threads 
+z-update 
 '
 
 cd ${HAB_PARENT_DIR}
@@ -32,6 +33,8 @@ do
 	chown mark:mark ${f}
 	chmod 755 ${f}
 done
+
+cd /opt
 
 echo "Done!"
 

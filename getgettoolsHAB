@@ -1,6 +1,6 @@
 #!/bin/bash
 
-HAB_PARENT_DIR="/opt"
+HAB_PARENT_DIR="/opt/bin"
 
 FILE_LIST="gettoolsHAB"
 
@@ -13,5 +13,7 @@ do
 	chown mark:mark ${f}
 	chmod 755 ${f}
 done
+
+cd /opt
 
 echo "Done!"
