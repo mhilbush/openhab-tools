@@ -1,0 +1,63 @@
+#!/bin/bash
+
+CDJACKSON="https://www.cd-jackson.com/index.php/zwave/zwave-device-database/zwave-device-list/devicesummary/"
+
+if [ $# -eq 0 ] ; then
+    echo "Usage: z-lookup node-number"
+    exit 1
+fi
+
+NODENUMBER=${1}
+
+HOST=`hostname -A`
+HOST="$(echo -e "${HOST}" | tr -d '[:space:]')"
+
+#echo "Looking up Z-Wave node" ${NODENUMBER} "on host <${HOST}>"
+
+URLPART1="http://"
+URLPART2=":8080/rest/things/zwave:device:zstick:node"
+
+URL=${URLPART1}${HOST}${URLPART2}${NODENUMBER}
+
+#echo "Rest URL is" ${URL}
+
+TMPFILE=$(mktemp /tmp/abc-script.XXXXXX)
+
+# curl -X GET --header "Accept: application/json" 
+THING=`curl --silent -X GET --header "Accept: application/json" ${URL}`
+
+# Try using this
+# eval "$(jq -r '@sh "a=\(.a) b=\(.b)"' sample.json)"
+
+echo $THING | jq '.'
+
+status=`echo $THING | jq -r '.statusInfo.status'`
+label=`echo $THING | jq -r '.label'`
+thingTypeUID=`echo $THING | jq -r '.thingTypeUID'`
+modelId=`echo $THING | jq -r '.properties.modelId'`
+vendor=`echo $THING | jq -r '.properties.vendor'`
+manufacturerId=`echo $THING | jq -r '.properties.manufacturerId'`
+manufacturerRef=`echo $THING | jq -r '.properties.manufacturerRef'`
+zwave_version=`echo $THING | jq -r '.properties.zwave_version'`
+zwave_lastwakeup=`echo $THING | jq -r '.properties.zwave_lastwakeup'`
+zwave_lastheal=`echo $THING | jq -r '.properties.zwave_lastheal'`
+dbReference=`echo $THING | jq -r '.properties.dbReference'`
+group_1=`echo $THING | jq -r '.configuration.group_1'`
+
+echo "Node             : " ${NODENUMBER}
+echo "Label            : " $label
+echo "Model ID         : " $vendor $modelId
+echo "Manufacturer Id  : " $manufacturerId
+echo "Manufacturer Ref : " $manufacturerRef
+echo "Firmware Version : " $zwave_version
+echo "DB Reference     : " $CDJACKSON$dbReference
+echo "Thing Type UI  D : " $thingTypeUID
+echo
+
+echo "Status           : " $status
+echo "Last Wakeup      : " $zwave_lastwakeup
+echo "Last Heal        : " $zwave_lastheal
+echo
+echo "Group 1          : " $group_1
+
+echo
