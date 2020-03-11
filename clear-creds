@@ -1,0 +1,4 @@
+#!/bin/bash
+
+rm -f /opt/openhab2/userdata/jsondb/StorageHandler.For.OAuthClientService.json
+rm -f /opt/openhab2/userdata/jsondb/backup/[0-9]*--StorageHandler.For.OAuthClientService.json
