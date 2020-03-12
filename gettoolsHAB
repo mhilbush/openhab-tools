@@ -14,6 +14,8 @@ oh-memory
 oh-mpstat
 reinit 
 restartHAB 
+revert-start-levels 
+set-start-levels 
 startHAB 
 stopHAB 
 top-threads-cpu
