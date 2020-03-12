@@ -1,0 +1,18 @@
+#!/bin/bash
+
+KARAF_DIR="/opt/openhab2/runtime"
+
+${KARAF_DIR}/bin/client -p habopen -l 0 -b << EE__OO__FF
+bundle:start-level org.openhab.core.model.thing 83
+bundle:start-level org.openhab.core.model.thing.ide 83
+bundle:start-level org.openhab.core.model.thing.runtime 83
+bundle:start-level org.openhab.core.model.item 85
+bundle:start-level org.openhab.core.model.item.ide 85
+bundle:start-level org.openhab.core.model.item.runtime 85
+bundle:start-level org.openhab.core.model.sitemap 88
+bundle:start-level org.openhab.core.model.sitemap.ide 88
+bundle:start-level org.openhab.core.model.sitemap.runtime 88
+bundle:start-level org.openhab.core.model.rule 90
+bundle:start-level org.openhab.core.model.rule.ide 90
+bundle:start-level org.openhab.core.model.rule.runtime 90
+EE__OO__FF
