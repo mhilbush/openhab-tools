@@ -6,6 +6,9 @@ FILE_LIST='
 backupHAB 
 clear-creds
 db-backupHAB 
+db-cleanup 
+db-counts 
+db-deleteunusedtables 
 event-rate
 install-upnp 
 install-jna 

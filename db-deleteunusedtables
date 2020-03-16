@@ -1,0 +1,48 @@
+#! /bin/bash
+
+ITEMIDS=`echo "select ItemId as ItemTable from Items order by ItemId;" | mysql -N -s --user=openhab --password=openhab openhab 2>/dev/null`
+ITEMID_ARRAY=( $ITEMIDS )
+
+ITEMTABLES=`echo "select CONCAT('Item',ItemId) as ItemTable from Items order by ItemId;" | mysql -N -s --user=openhab --password=openhab openhab 2>/dev/null`
+ITEMTABLE_ARRAY=($ITEMTABLES)
+
+ITEMNAMES=`echo "select ItemName from Items order by ItemId;" | mysql -N -s --user=openhab --password=openhab openhab 2>/dev/null`
+ITEMNAME_ARRAY=($ITEMNAMES)
+
+BASEURL="http://openhab-md.md.hilbush.com:8080/rest/items/"
+
+#echo ${ITEMIDS}
+#echo "ItemId count = ${#ITEMID_ARRAY[@]}"
+
+#echo ${ITEMNAMES}
+#echo "ItemId count = ${#ITEMNAME_ARRAY[@]}"
+
+#echo ${ITEMTABLES}
+#echo "ItemId count = ${#ITEMTABLE_ARRAY[@]}"
+
+itemNotExists() {
+    itemname=$1
+    result=`curl --silent ${BASEURL}${itemname} | jq '.error."http-code"'`
+    if [ ${result}x = "404x" ] ; then
+        true 
+    else 
+        false
+    fi;
+}
+
+for ((i=0; i<${#ITEMNAME_ARRAY[@]}; ++i)); do
+    itemid=${ITEMID_ARRAY[$i]}
+    itemname=${ITEMNAME_ARRAY[$i]}
+    tablename="Item"${ITEMID_ARRAY[$i]}
+
+    if itemNotExists ${itemname} ; then
+        echo
+        read -p "Drop table ${tablename}($itemname): Are you sure? " -n 1 -r
+        if [[ $REPLY =~ ^[Yy]$ ]]
+        then
+            echo "delete from Items where ItemId=${itemid};" | mysql -N -s --user=openhab --password=openhab openhab 2>/dev/null
+            echo "drop table ${tablename};" | mysql -N -s --user=openhab --password=openhab openhab 2>/dev/null
+            echo
+        fi    
+    fi
+done

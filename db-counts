@@ -1,0 +1,35 @@
+#! /bin/bash
+
+MAXROWS=0
+
+ITEMIDS=`echo "select ItemId as ItemTable from Items order by ItemId;" | \
+    mysql -N -s --user=openhab --password=openhab openhab 2>/dev/null`
+ITEMID_ARRAY=( $ITEMIDS )
+
+ITEMTABLES=`echo "select CONCAT('Item',ItemId) as ItemTable from Items order by ItemId;" | \
+    mysql -N -s --user=openhab --password=openhab openhab 2>/dev/null`
+ITEMTABLE_ARRAY=($ITEMTABLES)
+
+ITEMNAMES=`echo "select ItemName from Items order by ItemId;" | \
+    mysql -N -s --user=openhab --password=openhab openhab 2>/dev/null`
+ITEMNAME_ARRAY=($ITEMNAMES)
+
+#echo ${ITEMIDS}
+#echo "ItemId count = ${#ITEMID_ARRAY[@]}"
+
+#echo ${ITEMNAMES}
+#echo "ItemId count = ${#ITEMNAME_ARRAY[@]}"
+
+#echo ${ITEMTABLES}
+#echo "ItemId count = ${#ITEMTABLE_ARRAY[@]}"
+
+
+(for ((i=0; i<${#ITEMID_ARRAY[@]}; ++i)); do
+    table="Item${ITEMID_ARRAY[$i]}"
+    COUNT=`echo "select count(*) from ${table};" | \
+        mysql -N -s --user=openhab --password=openhab openhab 2>/dev/null`
+    if [ ${COUNT} -gt ${MAXROWS} ] ; then
+        printf "%-10s%-34s%10s\n" "${ITEMTABLE_ARRAY[$i]}" "${ITEMNAME_ARRAY[$i]}" "${COUNT}"
+    fi
+done) | sort -r -n -k 3
+
