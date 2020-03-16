@@ -1,0 +1,4 @@
+#! /bin/bash
+
+echo "select YEAR(Time) as Year, MONTH(Time) as Month, MAX(Value) as Energy from Item101 group by Year ASC, Month ASC;" | \
+    mysql --user=openhab --password=openhab openhab 2>/dev/null

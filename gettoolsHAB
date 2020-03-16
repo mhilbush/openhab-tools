@@ -12,6 +12,7 @@ db-deleteunusedtables
 event-rate
 install-upnp 
 install-jna 
+monthly-energy-usage 
 oh-cpu 
 oh-memory 
 oh-mpstat
