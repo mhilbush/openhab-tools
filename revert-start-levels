@@ -6,6 +6,7 @@ ${KARAF_DIR}/bin/client -p habopen -l 0 -b << EE__OO__FF
 bundle:start-level org.openhab.core.model.thing 80
 bundle:start-level org.openhab.core.model.thing.ide 80
 bundle:start-level org.openhab.core.model.thing.runtime 80
+bundle:start-level org.openhab.core.persistence 80
 bundle:start-level org.openhab.core.model.item 80
 bundle:start-level org.openhab.core.model.item.ide 80
 bundle:start-level org.openhab.core.model.item.runtime 80
